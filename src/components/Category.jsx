@@ -17,8 +17,12 @@ const categoriesSmall = [
 const CategoryItem = ({ img, alt, label, link }) => (
   <div className="single-cat-item">
     <Link to={link}>
-      <figure className="category-thumb">
-        <img src={img} alt={alt} className="w-full h-auto object-cover" />
+      <figure className="category-thumb rounded-3xl overflow-hidden"> {/* added rounded-lg and overflow-hidden here */}
+        <img
+          src={img}
+          alt={alt}
+          className="w-full h-auto object-cover rounded-5xl transition-transform duration-300 ease-in-out group-hover:scale-105"
+        />
         <figcaption className="category-name">
           <span>{label}</span>
         </figcaption>
@@ -26,6 +30,7 @@ const CategoryItem = ({ img, alt, label, link }) => (
     </Link>
   </div>
 );
+
 
 export default function Category() {
   return (
@@ -66,7 +71,7 @@ export default function Category() {
                   key={i}
                   className={`col-sm-6 w-1/2 px-3 ${i === 0 ? "mb-4 lg:mb-0" : ""}`}
                 >
-                  <CategoryItem img={img} alt={alt} label={label} link={link} />
+                  <CategoryItem img={img} alt={alt} label={label} link={link}  />
                 </div>
               ))}
             </div>

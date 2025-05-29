@@ -8,7 +8,6 @@ const DateNight = () => {
   const [activeTab, setActiveTab] = useState("Date night");
   const navigate = useNavigate();
 
-  // Map tab names to occasion strings used in product data
   const tabOccasionMap = {
     "Date night": "datenight",
     Heritage: "heritage",
@@ -16,7 +15,6 @@ const DateNight = () => {
     Gift: "gift",
   };
 
-  // Filter products by active tab occasion and take first 4
   const filteredProducts = products
     .filter((p) => p.occasion.includes(tabOccasionMap[activeTab]))
     .slice(0, 4);
@@ -34,7 +32,6 @@ const DateNight = () => {
 
   return (
     <div className="date-night-products max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      {/* Title */}
       <motion.h1
         key={activeTab + "-title"}
         initial={{ opacity: 0, y: -10 }}
@@ -46,18 +43,16 @@ const DateNight = () => {
         {activeTab} Specials
       </motion.h1>
 
-      {/* Description */}
       <motion.p
         key={activeTab + "-desc"}
         initial={{ opacity: 0, y: 5 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className="text-center text-sm sm:text-base text-gray-500 italic mb-6 sm:mb-8"
+        className="text-center text-sm sm:text-base text-gray-500  mb-6 sm:mb-8"
       >
         {descriptions[activeTab]}
       </motion.p>
 
-      {/* Decorative Line */}
       <div className="flex justify-center items-center mb-4 sm:mb-6">
         <img
           src="./title-line.png"
@@ -66,13 +61,12 @@ const DateNight = () => {
         />
       </div>
 
-      {/* Tabs */}
-      <div className="flex flex-wrap justify-center items-center gap-3 mb-6 px-2">
+      <div className="flex overflow-x-auto whitespace-nowrap justify-center items-center gap-2 mb-6 px-2">
         {["Date night", "Heritage", "Wedding", "Gift"].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-3 py-1 border-b-2 transition text-sm font-medium ${
+            className={`px-2 py-1 border-b-2 transition text-xs sm:text-2xl md:text-3xl font-medium flex-shrink-0 ${
               activeTab === tab
                 ? "border-red-600 text-red-600"
                 : "border-transparent text-gray-500 hover:text-red-600"
@@ -83,7 +77,7 @@ const DateNight = () => {
         ))}
       </div>
 
-      {/* Products */}
+
       <AnimatePresence mode="wait">
         <motion.div
           key={activeTab + "-products"}
@@ -91,7 +85,7 @@ const DateNight = () => {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.3 }}
-          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8"
+          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6"
         >
           {filteredProducts.map((product) => (
             <div
@@ -100,7 +94,9 @@ const DateNight = () => {
               className="cursor-pointer"
               role="button"
               tabIndex={0}
-              onKeyPress={(e) => { if (e.key === 'Enter') navigate(`/product/${product.id}`); }}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') navigate(`/product/${product.id}`);
+              }}
             >
               <ProductCard
                 image={product.images[0]}

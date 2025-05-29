@@ -40,9 +40,9 @@ const Navbar = () => {
 
           {/* Icons */}
           <div className="hidden lg:flex items-center space-x-6 text-gray-600">
-            {/* <button className="hover:text-indigo-600">
+            <button className="hover:text-indigo-600">
               <FaSearch />
-            </button> */}
+            </button>
 
             <div className="relative group">
               <button className="relative hover:text-indigo-600">
@@ -83,7 +83,7 @@ const Navbar = () => {
         }`}
         onClick={() => setIsMobileMenuOpen(false)}
       ></div>
-
+    
       {/* Slide-in Menu */}
       <div
         className={`fixed top-0 right-0 h-full w-64 bg-white shadow-lg z-50 transform transition-transform duration-300 ease-in-out ${
@@ -104,9 +104,9 @@ const Navbar = () => {
           <a href="/blog" className="hover:text-indigo-600">Blog</a>
           <a href="/about" className="hover:text-indigo-600">Contact Us</a>
           <div className="flex items-center space-x-4 pt-4 border-t">
-            {/* <button className="hover:text-indigo-600">
+            <button className="hover:text-indigo-600">
               <FaSearch />
-            </button> */}
+            </button>
             <button className="hover:text-indigo-600">
               <FaShoppingBag />
             </button>
