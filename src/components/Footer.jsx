@@ -38,7 +38,7 @@ const Footer = () => {
 
           {/* Newsletter & Social */}
           <div>
-            <h3 className="text-xl font-semibold mb-4">Subscribe to Our Newsletter</h3>
+            {/* <h3 className="text-xl font-semibold mb-4">Subscribe to Our Newsletter</h3>
             <form className="flex flex-col sm:flex-row gap-3">
               <input
                 type="email"
@@ -51,7 +51,7 @@ const Footer = () => {
               >
                 Subscribe
               </button>
-            </form>
+            </form> */}
 
             <div className="mt-6 flex space-x-5 text-white">
               <a href="https://facebook.com" aria-label="Facebook" className="hover:text-gray-400 transition">

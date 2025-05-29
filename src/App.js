@@ -9,12 +9,15 @@ import About from "./Pages/About";
 import ProductDialog from "./UI/ProductDialog";
 import CategoryShop from "./Pages/CategoryShop";
 import ProfilePage from "./Pages/ProfilePage";
+import TopOfferBar from "./components/TopOffer";
 
 function App() {
   return (
     <>
+    <TopOfferBar />
     <Navbar />
-    <main className="pt-16 lg:pt-19">
+    
+    <main className="pt-24 lg:pt-19">
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />

@@ -5,14 +5,15 @@ import products from "../Data/ProductData.js";
 import { AnimatePresence, motion } from "framer-motion";
 
 const DateNight = () => {
-  const [activeTab, setActiveTab] = useState("Date night");
+  const [activeTab, setActiveTab] = useState("Everyday Wear");
   const navigate = useNavigate();
 
   const tabOccasionMap = {
+    "Gifts": "gift",
     "Date night": "datenight",
-    Heritage: "heritage",
-    Wedding: "wedding",
-    Gift: "gift",
+    "Traditional": "heritage",
+    "Everyday Wear": "wedding",
+
   };
 
   const filteredProducts = products
@@ -21,9 +22,9 @@ const DateNight = () => {
 
   const descriptions = {
     "Date night": "Curated picks to make your evening unforgettable.",
-    Heritage: "Celebrate timeless heritage with these exclusive picks.",
-    Wedding: "Elegant gifts to mark the beginning of forever.",
-    Gift: "Handpicked surprises for every kind of love.",
+    "Traditional": "Celebrate timeless heritage with these exclusive picks.",
+    "Everyday Wear": "Elegant gifts to mark the beginning of forever.",
+    "Gifts": "Handpicked surprises for every kind of love.",
   };
 
   const handleAddToCart = (product) => alert(`Added "${product.title}" to cart!`);
@@ -61,12 +62,12 @@ const DateNight = () => {
         />
       </div>
 
-      <div className="flex overflow-x-auto whitespace-nowrap justify-center items-center gap-2 mb-6 px-2">
-        {["Date night", "Heritage", "Wedding", "Gift"].map((tab) => (
+      <div className="flex overflow-x-auto whitespace-nowrap justify-center items-center gap-0 mb-6 px-0">
+        {["Everyday Wear", "Gifts", "Traditional", "Date night"].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-2 py-1 border-b-2 transition text-xs sm:text-2xl md:text-3xl font-medium flex-shrink-0 ${
+            className= {`px-2 py-1 border-b-2  transition text-xs sm:text-2xl md:text-3xl font-medium flex-shrink-0 ${
               activeTab === tab
                 ? "border-red-600 text-red-600"
                 : "border-transparent text-gray-500 hover:text-red-600"
