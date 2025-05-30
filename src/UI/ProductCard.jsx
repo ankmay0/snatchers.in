@@ -21,14 +21,14 @@ const ProductCard = ({
       <div
         className="absolute inset-0 bg-pink-500 bg-opacity-10
                    scale-x-0 origin-center transition-transform duration-500
-                   ease-cubic-bezier(0.4, 0, 0.2, 1) group-hover:scale-x-100 pointer-events-none z-[50]"
+                   ease-cubic-bezier(0.4, 0, 0.2, 1) group-hover:scale-x-100 pointer-events-none z-[10]"
         style={{ transformOrigin: "center" }}
       ></div>
 
       {/* Badge rotated 90 degrees on left */}
       {badgeText && (
         <div
-          className={`absolute z-50 top-2 left-1 rotate-90 text-white italic px-2 py-0.5 text-[7px] sm:text-[10px] font-serif ${badgeClass} clip-polygon`}
+          className={`absolute z-10 top-2 left-1 rotate-90 text-white italic px-2 py-0.5 text-[7px] sm:text-[10px] font-serif ${badgeClass} clip-polygon`}
           style={{
             clipPath:
               "polygon(100% 0%, 85% 50%, 100% 100%, 0 100%, 0% 50%, 0 0)",

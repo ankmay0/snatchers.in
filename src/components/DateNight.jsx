@@ -62,12 +62,12 @@ const DateNight = () => {
         />
       </div>
 
-      <div className="flex overflow-x-auto whitespace-nowrap justify-center items-center gap-0 mb-6 px-0">
+      <div className="flex overflow-x-auto whitespace-nowrap justify-center items-center gap-0 mb-6 px-0 scrollbar-hide">
         {["Everyday Wear", "Gifts", "Traditional", "Date night"].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className= {`px-2 py-1 border-b-2  transition text-xs sm:text-2xl md:text-3xl font-medium flex-shrink-0 ${
+            className= {`px-1 py-1 border-b-2  transition text-xs sm:text-2xl md:text-3xl font-medium flex-shrink-0 ${
               activeTab === tab
                 ? "border-red-600 text-red-600"
                 : "border-transparent text-gray-500 hover:text-red-600"

@@ -10,7 +10,7 @@ const categories = [
 const CategoryCarousel = () => {
   return (
     <div className="w-screen max-w-8xl py-12 px-1 sm:px-10 lg:px-32">
-      <div className="flex sm:grid sm:grid-cols-4 gap-10 overflow-x-auto sm:overflow-visible">
+      <div className="flex sm:grid sm:grid-cols-4 gap-10 overflow-x-auto sm:overflow-visible scrollbar-hide">
         {categories.map((cat) => (
           <div
             key={cat.id}
@@ -23,7 +23,10 @@ const CategoryCarousel = () => {
                 className="w-full h-full object-cover"
               />
             </div>
-            <p className="mt-6 text-base sm:text-lg md:text-xl lg:text-2xl font-extrabold text-gray-900 text-center" style={{ fontFamily: "'Italiana', serif" }}>
+            <p
+              className="mt-6 text-base sm:text-lg md:text-xl lg:text-2xl font-extrabold text-gray-900 text-center"
+              style={{ fontFamily: "'Italiana', serif" }}
+            >
               {cat.name}
             </p>
           </div>

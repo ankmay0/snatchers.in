@@ -19,7 +19,7 @@ const Navbar = () => {
 
           {/* Gambler Button */}
           <button
-            className="lg:hidden text-2xl text-gray-700 z-50 transition-transform duration-300 transform hover:scale-110"
+            className="lg:hidden text-2xl text-gray-700 z-40 transition-transform duration-300 transform hover:scale-110"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? (

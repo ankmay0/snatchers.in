@@ -17,7 +17,7 @@ const Shop = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* ... Your title and decorative line */}
 
-        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <div className="grid gap-6 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {products.map((product) => (
             <ProductCard
               key={product.id}
