@@ -5,18 +5,19 @@ const categories = [
   { id: 2, name: 'Women', image: '/product-2.jpg' },
   { id: 3, name: 'Kids', image: '/product-3.jpg' },
   { id: 4, name: 'Accessories', image: '/product-4.jpg' },
+  { id: 5, name: 'More', image: '/product-5.jpg' }, // fixed duplicate ID
 ];
 
 const CategoryCarousel = () => {
   return (
-    <div className="w-screen max-w-8xl py-0 px-1 sm:px-10 lg:px-32">
-      <div className="flex sm:grid sm:grid-cols-4 gap-10 overflow-x-auto sm:overflow-visible scrollbar-hide">
+    <div className="w-full overflow-x-auto scrollbar-hide px-10  py-8">
+      <div className="flex gap-10 min-w-max justify-start items-center">
         {categories.map((cat) => (
           <div
             key={cat.id}
-            className="flex flex-col items-center min-w-[5rem] sm:min-w-0"
+            className="flex flex-col items-center min-w-[2rem]"
           >
-            <div className="w-24 h-30 md:w-48 md:h-48 lg:w-60 lg:h-60 rounded-full overflow-hidden border-4 border-gray-300 shadow-2xl">
+            <div className="w-24 h-24 md:w-36 md:h-36 lg:w-60 lg:h-60 rounded-full overflow-hidden border-4 border-gray-300 shadow-lg">
               <img
                 src={cat.image}
                 alt={cat.name}
@@ -24,7 +25,7 @@ const CategoryCarousel = () => {
               />
             </div>
             <p
-              className="mt-6 text-base sm:text-lg md:text-xl lg:text-2xl font-extrabold text-gray-900 text-center"
+              className="mt-4 text-base md:text-lg font-semibold text-gray-800 text-center"
               style={{ fontFamily: "'Italiana', serif" }}
             >
               {cat.name}

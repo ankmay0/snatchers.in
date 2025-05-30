@@ -34,7 +34,7 @@ const ModelCatalog = () => {
   const duplicatedImages = [...modelImages, ...modelImages];
 
   return (
-    <div className="w-full max-w-8xl mt-20 mx-auto p-4">
+    <div className="w-full max-w-8xl mt-5 mx-auto p-4">
       {/* <h2 className="text-2xl font-semibold mb-6 text-center">Model Catalog</h2> */}
       <div
         ref={scrollRef}

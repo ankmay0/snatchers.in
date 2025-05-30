@@ -21,6 +21,7 @@ function Home() {
       <CategoryCarousel />
       <DateNight />
       <Category />
+      <AnimatedHeading heading="Happy Coustomers" subheading=" " />
       <ModelCatalog />
       <NewProducts />
       <Testimonial />
