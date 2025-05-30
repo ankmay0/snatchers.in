@@ -10,7 +10,7 @@ const OurStory = () => {
           <div className="w-full lg:w-1/2">
             <div className="overflow-hidden rounded-md shadow-lg">
               <img
-                src="https://www.palmonas.com/cdn/shop/files/STORE_-ABOUT_US_af186df3-7cd2-4600-8c6a-d10ebe13bc25.webp?v=1724675509" // Make sure this image exists in your public folder
+                src="https://images.pexels.com/photos/276374/pexels-photo-276374.jpeg" // Make sure this image exists in your public folder
                 alt="Our Story"
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
               />

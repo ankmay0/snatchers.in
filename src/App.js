@@ -17,7 +17,7 @@ function App() {
     <TopOfferBar />
     <Navbar />
     
-    <main className="pt-32 lg:pt-19">
+    <main className="pt-36 lg:pt-19">
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />

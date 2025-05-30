@@ -27,7 +27,7 @@ const NewProducts = () => {
 
   return (
 <>
-  <div className="date-night-products mt-0 max-w-7xl mx-auto px-6 py-10">
+  <div className="date-night-products mt-0 max-w-10xl mx-auto px-6 py-10">
     <h1
       className="text-6xl mb-0 text-center text-gray-800 font-medium"
       style={{ fontFamily: "'Italiana', serif" }}

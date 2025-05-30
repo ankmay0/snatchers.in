@@ -8,7 +8,7 @@ const AnimatedHeading = ({ heading, subheading }) => {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className="text-3xl sm:text-4xl mt-9 lg:text-6xl mb-2 text-center text-gray-800 font-medium"
+        className="text-3xl sm:text-4xl mt-4 lg:text-6xl mb-2 text-center text-gray-800 font-medium"
         style={{ fontFamily: "'Italiana', serif" }}
       >
         {heading}

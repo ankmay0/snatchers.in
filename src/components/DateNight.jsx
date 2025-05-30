@@ -18,7 +18,7 @@ const DateNight = () => {
 
   const filteredProducts = products
     .filter((p) => p.occasion.includes(tabOccasionMap[activeTab]))
-    .slice(0, );
+    .slice(0,8);
 
   const descriptions = {
     "Date night": "Curated picks to make your evening unforgettable.",
@@ -32,7 +32,7 @@ const DateNight = () => {
   const handleCompare = (product) => alert(`Added "${product.title}" to compare!`);
 
   return (
-    <div className="date-night-products max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div className="date-night-products max-w-10xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <motion.h1
         key={activeTab + "-title"}
         initial={{ opacity: 0, y: -10 }}

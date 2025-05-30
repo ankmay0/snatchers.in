@@ -26,7 +26,7 @@ const blogs = [
 
 const Blog = () => {
   return (
-    <section id="blog-area" className="py-[90px] px-4 sm:px-6 lg:px-8">
+    <section id="blog-area" className="py-[0px] px-4 sm:px-6 lg:px-8">
       <div className="max-w-screen-xl mx-auto">
         <div className="text-center mb-10 px-2 sm:px-0">
           <h2

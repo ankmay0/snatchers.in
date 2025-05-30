@@ -21,10 +21,10 @@ function Home() {
       <CategoryCarousel />
       <DateNight />
       <Category />
-      <AnimatedHeading heading="Happy Coustomers" subheading=" " />
+      <AnimatedHeading heading="Happy Coustomers" subheading="Making our coustomers happy." />
       <ModelCatalog />
       <NewProducts />
-      <Testimonial />
+      {/* <Testimonial /> */}
       <Blog />
       <OurStory />
       </>

@@ -20,9 +20,9 @@ const Navbar = () => {
       if (window.scrollY < 20) {
         setShowMobileSearch(true);
       } else if (window.scrollY > lastScrollY) {
-        setShowMobileSearch(false); // scrolling down
+        setShowMobileSearch(false);
       } else {
-        setShowMobileSearch(true); // scrolling up
+        setShowMobileSearch(true);
       }
       lastScrollY = window.scrollY;
     };
@@ -33,22 +33,20 @@ const Navbar = () => {
 
   return (
     <>
-      {/* Navbar */}
-      <header className="fixed top-8 xl:top-8 sm:top-10 left-0 w-full bg-white shadow-md z-40">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            {/* Logo */}
+      <header className="fixed top-8 left-0 w-full bg-white shadow-md z-40">
+        <div className="flex flex-col items-center justify-center px-4 py-4">
+          <div className="flex items-center justify-center w-full max-w-7xl">
             <a href="/" className="flex items-center">
               <img
                 src="/logo-black.png"
                 alt="Logo"
-                className="h-10 w-auto max-w-full sm:h-8 lg:h-[4rem]"
+                className="h-12 w-auto"
               />
             </a>
 
-            {/* Search Bar - Desktop Only */}
-            <div className="hidden lg:flex flex-1 mx-6">
-              <div className="bg-white border-2 border-black rounded-full flex items-center px-4 py-2 shadow-md max-w-xl mx-auto w-full">
+            {/* Search Bar */}
+            <div className="hidden lg:flex flex-grow justify-center px-4">
+              <div className="bg-gray-200  rounded-full flex items-center px-4 py-3 shadow-md w-[800px] max-w-full">
                 <FaSearch className="text-gray-500 mr-2" />
                 <input
                   type="text"
@@ -59,13 +57,13 @@ const Navbar = () => {
             </div>
 
             {/* Icons */}
-            <div className="flex items-center space-x-3 text-gray-600">
-              <button className="hover:text-indigo-600">
+            <div className="flex items-center  space-x-6 ml-auto">
+              <button className="hover:text-indigo-600 lg:text-2xl">
                 <FaHeart />
               </button>
 
               <div className="relative group">
-                <button className="relative hover:text-indigo-600">
+                <button className="relative hover:text-indigo-600 lg:text-2xl">
                   <FaShoppingBag />
                   <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1 rounded-full">
                     3
@@ -88,7 +86,7 @@ const Navbar = () => {
                         </p>
                       </div>
                       <button>
-                        <FaTrashAlt className="text-red-500" />
+                        <FaTrashAlt className="text-red-500 lg:text-2xl" />
                       </button>
                     </div>
                   ))}
@@ -101,13 +99,13 @@ const Navbar = () => {
                 </div>
               </div>
 
-              <a href="/profile" className="hover:text-indigo-600">
+              <a href="/profile" className="hover:text-indigo-600 lg:text-2xl">
                 <FaUser />
               </a>
 
               {/* Hamburger Button */}
               <button
-                className="lg:hidden text-2xl text-gray-700 z-40 transition-transform duration-300 transform hover:scale-110"
+                className="lg:hidden text-2xl text-gray-700"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               >
                 {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
@@ -115,9 +113,9 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Search Bar - Mobile Only (Visible only at top) */}
+          {/* Mobile Search */}
           {showMobileSearch && (
-            <div className="block lg:hidden mt-4 transition-opacity duration-300">
+            <div className="block lg:hidden mt-4 w-full px-4">
               <div className="bg-white border-2 border-black rounded-full flex items-center px-4 py-2 shadow-md mx-auto max-w-md">
                 <FaSearch className="text-gray-500 mr-2" />
                 <input
@@ -129,8 +127,8 @@ const Navbar = () => {
             </div>
           )}
 
-          {/* Navigation Links */}
-          <nav className="hidden lg:flex justify-center mt-4 space-x-8 text-gray-700 text-sm font-medium">
+          {/* Nav Links (Centered) */}
+          <nav className="hidden lg:flex justify-center mt-3 space-x-12 text-gray-700 text-lg font-thin">
             <a href="/" className="hover:text-indigo-600">
               Home
             </a>
@@ -143,9 +141,25 @@ const Navbar = () => {
             <a href="/womens" className="hover:text-indigo-600">
               Women
             </a>
+                        <a href="/" className="hover:text-indigo-600">
+              Home
+            </a>
+            <a href="/shop" className="hover:text-indigo-600">
+              Shop
+            </a>
+            <a href="/mens" className="hover:text-indigo-600">
+              Men
+            </a>
+            <a href="/womens" className="hover:text-indigo-600">
+              Women
+            </a>
             <a href="/about" className="hover:text-indigo-600">
+              About Us
+            </a>
+                        <a href="/about" className="hover:text-indigo-600">
               Contact Us
             </a>
+            
           </nav>
         </div>
       </header>
@@ -172,8 +186,23 @@ const Navbar = () => {
             <FaTimes className="text-gray-700 text-xl hover:rotate-90 transition-transform duration-300" />
           </button>
         </div>
-        <nav className="flex flex-col p-4 space-y-4 text-gray-700 text-sm font-medium">
+        <nav className="flex flex-col p-4 space-y-4 text-gray-700 text-md font-thin">
           <a href="/" className="hover:text-indigo-600">
+            Home
+          </a>
+          <a href="/shop" className="hover:text-indigo-600">
+            Shop
+          </a>
+          <a href="/mens" className="hover:text-indigo-600">
+            Men
+          </a>
+          <a href="/womens" className="hover:text-indigo-600">
+            Women
+          </a>
+          <a href="/about" className="hover:text-indigo-600">
+            Contact Us
+          </a>
+                    <a href="/" className="hover:text-indigo-600">
             Home
           </a>
           <a href="/shop" className="hover:text-indigo-600">
