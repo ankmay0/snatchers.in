@@ -9,7 +9,7 @@ const categories = [
 
 const CategoryCarousel = () => {
   return (
-    <div className="w-screen max-w-8xl py-12 px-1 sm:px-10 lg:px-32">
+    <div className="w-screen max-w-8xl py-4 px-1 sm:px-10 lg:px-32">
       <div className="flex sm:grid sm:grid-cols-4 gap-10 overflow-x-auto sm:overflow-visible scrollbar-hide">
         {categories.map((cat) => (
           <div

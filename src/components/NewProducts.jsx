@@ -23,7 +23,7 @@ const NewProducts = () => {
   };
 
   // Use only first 4 products or customize as needed
-  const displayedProducts = products.slice(0, 4);
+  const displayedProducts = products.slice(0, 8);
 
   return (
     <div className="date-night-products mt-5 max-w-7xl mx-auto px-6 py-10">

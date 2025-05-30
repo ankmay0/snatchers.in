@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from "react";
 
 const modelImages = [
-  "https://randomuser.me/api/portraits/women/44.jpg",
-  "https://randomuser.me/api/portraits/men/46.jpg",
+  "/cat-model-1.jpg",
+  "/cat-model-2.jpg",
   "https://randomuser.me/api/portraits/women/65.jpg",
   "https://randomuser.me/api/portraits/men/22.jpg",
   "https://randomuser.me/api/portraits/women/33.jpg",

@@ -9,11 +9,15 @@ import Footer from "../components/Footer.jsx";
 import CategoryCarousel from "../components/CategoryCrausel.jsx";
 import ModelCatalog from "../components/ModelCatelog.jsx";
 import OurStory from "../components/OurStory.jsx";
+import AnimatedHeading from "../UI/AnimatedHeading.jsx";
 
 function Home() {
   return (
     <>
       <Crausel />
+      <AnimatedHeading heading="Mens" subheading="Bold design for modern men" />
+      <CategoryCarousel />
+      <AnimatedHeading heading="Womens" subheading="Empowering styles for modern women" />
       <CategoryCarousel />
       <DateNight />
       <Category />

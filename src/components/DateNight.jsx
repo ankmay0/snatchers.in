@@ -18,7 +18,7 @@ const DateNight = () => {
 
   const filteredProducts = products
     .filter((p) => p.occasion.includes(tabOccasionMap[activeTab]))
-    .slice(0, 4);
+    .slice(0, 8);
 
   const descriptions = {
     "Date night": "Curated picks to make your evening unforgettable.",
