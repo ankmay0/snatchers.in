@@ -9,14 +9,14 @@ const categories = [
 
 const CategoryCarousel = () => {
   return (
-    <div className="w-screen max-w-8xl py-4 px-1 sm:px-10 lg:px-32">
+    <div className="w-screen max-w-8xl py-0 px-1 sm:px-10 lg:px-32">
       <div className="flex sm:grid sm:grid-cols-4 gap-10 overflow-x-auto sm:overflow-visible scrollbar-hide">
         {categories.map((cat) => (
           <div
             key={cat.id}
-            className="flex flex-col items-center min-w-[7rem] sm:min-w-0"
+            className="flex flex-col items-center min-w-[5rem] sm:min-w-0"
           >
-            <div className="w-30 h-30 md:w-48 md:h-48 lg:w-60 lg:h-60 rounded-full overflow-hidden border-4 border-gray-300 shadow-2xl">
+            <div className="w-24 h-30 md:w-48 md:h-48 lg:w-60 lg:h-60 rounded-full overflow-hidden border-4 border-gray-300 shadow-2xl">
               <img
                 src={cat.image}
                 alt={cat.name}
