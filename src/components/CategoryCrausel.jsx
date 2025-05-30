@@ -10,30 +10,31 @@ const categories = [
 
 const CategoryCarousel = () => {
   return (
-    <div className="w-full overflow-x-auto scrollbar-hide px-10  py-8">
-      <div className="flex gap-10 min-w-max justify-start items-center">
-        {categories.map((cat) => (
-          <div
-            key={cat.id}
-            className="flex flex-col items-center min-w-[2rem]"
-          >
-            <div className="w-24 h-24 md:w-36 md:h-36 lg:w-60 lg:h-60 rounded-full overflow-hidden border-4 border-gray-300 shadow-lg">
-              <img
-                src={cat.image}
-                alt={cat.name}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <p
-              className="mt-4 text-base md:text-lg font-semibold text-gray-800 text-center"
-              style={{ fontFamily: "'Italiana', serif" }}
-            >
-              {cat.name}
-            </p>
-          </div>
-        ))}
+<div className="w-full overflow-x-auto scrollbar-hide px-6 py-0">
+  <div className="flex gap-6 sm:gap-8 md:gap-10 lg:gap-12 min-w-max justify-start items-center">
+    {categories.map((cat) => (
+      <div
+        key={cat.id}
+        className="flex flex-col items-center min-w-[2rem]"
+      >
+        <div className="w-24 h-24 md:w-36 md:h-36 lg:w-64 lg:h-64 rounded-full overflow-hidden border-4 border-gray-300 shadow-lg">
+          <img
+            src={cat.image}
+            alt={cat.name}
+            className="w-full h-full object-cover"
+          />
+        </div>
+        <p
+          className="mt-4 text-base md:text-lg font-semibold text-gray-800 text-center"
+          style={{ fontFamily: "'Italiana', serif" }}
+        >
+          {cat.name}
+        </p>
       </div>
-    </div>
+    ))}
+  </div>
+</div>
+
   );
 };
 

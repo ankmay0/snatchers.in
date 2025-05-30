@@ -38,7 +38,7 @@ const DateNight = () => {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className="text-3xl sm:text-4xl lg:text-5xl mb-2 text-center text-gray-800 font-medium"
+        className="text-3xl sm:text-4xl lg:text-5xl sm:space-y-4 lg:space-y-10   mb-2 text-center text-gray-800 font-medium"
         style={{ fontFamily: "'Italiana', serif" }}
       >
         {activeTab} Specials
@@ -62,12 +62,12 @@ const DateNight = () => {
         />
       </div>
 
-      <div className="flex overflow-x-auto whitespace-nowrap justify-center items-center gap-0 mb-6 px-0 scrollbar-hide">
+      <div className="flex overflow-x-auto whitespace-nowrap justify-center items-center gap-2 sm:gap-4 md:gap-6 lg:gap-10 mb-6 px-0 scrollbar-hide">
         {["Everyday Wear", "Gifts", "Traditional", "Date night"].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className= {`px-1 py-1 border-b-2  transition text-xs sm:text-2xl md:text-3xl font-medium flex-shrink-0 ${
+            className={`px-1 py-1 border-b-2 transition text-xs sm:text-2xl md:text-3xl font-medium flex-shrink-0 ${
               activeTab === tab
                 ? "border-red-600 text-red-600"
                 : "border-transparent text-gray-500 hover:text-red-600"
@@ -77,6 +77,7 @@ const DateNight = () => {
           </button>
         ))}
       </div>
+
 
 
       <AnimatePresence mode="wait">
