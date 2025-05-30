@@ -5,7 +5,7 @@ import products from "../Data/ProductData.js";
 import { AnimatePresence, motion } from "framer-motion";
 
 const DateNight = () => {
-  const [activeTab, setActiveTab] = useState("Everyday Wear");
+  const [activeTab, setActiveTab] = useState("Gifts");
   const navigate = useNavigate();
 
   const tabOccasionMap = {
