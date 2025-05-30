@@ -67,9 +67,9 @@ const DateNight = () => {
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-1 py-1 border-b-2 transition text-xs sm:text-2xl md:text-3xl font-medium flex-shrink-0 ${
+            className={`px-1 py-1 border-2 rounded-xl p-2 transition text-xs sm:text-2xl md:text-3xl font-medium flex-shrink-0 ${
               activeTab === tab
-                ? "border-red-600 text-red-600"
+                ? "border-black text-black"
                 : "border-transparent text-gray-500 hover:text-red-600"
             }`}
           >
