@@ -15,9 +15,9 @@ function Home() {
   return (
     <>
       <Crausel />
-      <AnimatedHeading heading="Mens" subheading="Bold design for modern men" />
-      <CategoryCarousel />
       <AnimatedHeading heading="Womens" subheading="Empowering styles for modern women" />
+      <CategoryCarousel />
+      <AnimatedHeading heading="Mens" subheading="Bold design for modern men" />
       <CategoryCarousel />
       <DateNight />
       <Category />
