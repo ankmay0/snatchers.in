@@ -21,8 +21,8 @@ const fetchData = async () => {
     const token = user && (await user.getIdToken());
 
     const [productRes, wishlistRes] = await Promise.all([
-      axios.get("http://localhost:5000/api/products"),
-      axios.get("http://localhost:5000/api/wishlist", {
+      axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/products`),
+      axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/wishlist`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

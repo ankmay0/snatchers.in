@@ -28,7 +28,7 @@ const DateNight = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/products");
+        const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/products`);
         setProducts(res.data);
       } catch (err) {
         console.error("Error fetching products:", err);
