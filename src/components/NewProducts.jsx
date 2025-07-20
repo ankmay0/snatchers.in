@@ -18,7 +18,6 @@ const NewProducts = () => {
       try {
         const auth = getAuth();
         const user = auth.currentUser;
-
         if (!user) return;
 
         const idToken = await user.getIdToken();
@@ -41,7 +40,6 @@ const NewProducts = () => {
             ? item.productId._id || item.productId
             : item._id || item
         );
-
         setWishlist(wishlistedIds);
       } catch (err) {
         console.error("Error fetching products or wishlist:", err);
@@ -60,54 +58,34 @@ const NewProducts = () => {
   const handleCompare = (product) =>
     alert(`Added "${product.title}" to compare!`);
 
-const toggleWishlist = async (eventOrProductId, maybeProductId) => {
-  let event = null;
-  let productId = null;
+  const toggleWishlist = async (e, productId) => {
+    e?.stopPropagation?.();
 
-  // Determine if two arguments were passed (event, productId)
-  if (maybeProductId) {
-    event = eventOrProductId;
-    productId = maybeProductId;
+    if (!token) return;
 
-    if (event?.stopPropagation) {
-      event.stopPropagation();
+    const isWishlisted = wishlist.includes(productId);
+    const url = `${process.env.REACT_APP_API_BASE_URL}/api/wishlist/${productId}`;
+
+    try {
+      if (isWishlisted) {
+        await axios.delete(url, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setWishlist((prev) => prev.filter((id) => id !== productId));
+      } else {
+        await axios.post(
+          url,
+          {},
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setWishlist((prev) => [...prev, productId]);
+      }
+    } catch (err) {
+      console.error("Error updating wishlist:", err);
     }
-  } else {
-    productId = eventOrProductId;
-  }
-
-  if (!token) return;
-
-  const isWishlisted = wishlist.includes(productId);
-
-  try {
-    if (isWishlisted) {
-      await axios.delete(
-        `${process.env.REACT_APP_API_BASE_URL}/api/wishlist/${productId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setWishlist((prev) => prev.filter((id) => id !== productId));
-    } else {
-      await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/api/wishlist`,
-        { productId },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setWishlist((prev) => [...prev, productId]);
-    }
-  } catch (error) {
-    console.error("Error updating wishlist:", error);
-  }
-};
-
+  };
 
   return (
     <>
