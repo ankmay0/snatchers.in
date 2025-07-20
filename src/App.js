@@ -10,6 +10,8 @@ import ProductDialog from "./UI/ProductDialog";
 import CategoryShop from "./Pages/CategoryShop";
 import ProfilePage from "./Pages/ProfilePage";
 import TopOfferBar from "./components/TopOffer";
+import Login from "./Pages/Login";
+import AddProduct from "./Admin/AddProduct";
 
 function App() {
   return (
@@ -17,7 +19,7 @@ function App() {
     <TopOfferBar />
     <Navbar />
     
-    <main className="pt-32 lg:pt-19">
+    <main className="pt-36 lg:pt-19">
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -28,6 +30,8 @@ function App() {
           <Route path="/product/:productId" element={<ProductDialog />} />
           <Route path="/category-shop" element={<CategoryShop />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/add-product" element={<AddProduct />} />
 
         </Routes>
         

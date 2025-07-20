@@ -6,6 +6,8 @@ const categories = [
   { id: 3, name: 'Kids', image: '/product-3.jpg' },
   { id: 4, name: 'Accessories', image: '/product-4.jpg' },
   { id: 5, name: 'More', image: '/product-5.jpg' }, // fixed duplicate ID
+  { id: 6, name: 'Women', image: '/product-2.jpg' },
+  { id: 7, name: 'Kids', image: '/product-3.jpg' },
 ];
 
 const CategoryCarousel = () => {
@@ -17,7 +19,7 @@ const CategoryCarousel = () => {
         key={cat.id}
         className="flex flex-col items-center min-w-[2rem]"
       >
-        <div className="w-24 h-24 md:w-36 md:h-36 lg:w-64 lg:h-64 rounded-full overflow-hidden border-4 border-gray-300 shadow-lg">
+        <div className="w-24 h-24 md:w-36 md:h-36 lg:w-[10.5rem] lg:h-[10.5rem] rounded-full overflow-hidden border-4 border-gray-300 shadow-lg">
           <img
             src={cat.image}
             alt={cat.name}

@@ -1,28 +1,37 @@
 import React from "react";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 
 const ProductCard = ({
   image,
   title,
   price,
-  rating,
+  rating = 0,
   onAddToCart,
   badgeText,
   badgeClass = "bg-black",
   onClick,
+  onQuickView,
+  onCompare,
+  wishlisted = false,
+  onToggleWishlist,
 }) => {
   return (
     <div
       onClick={onClick}
       className="relative bg-gray-50 p-2.5 sm:p-5 overflow-hidden group cursor-pointer
-                 transition-shadow duration-400 ease-in-out
-                 hover:shadow-[0_10px_30px_rgba(0,0,0,0.15),0_15px_40px_rgba(0,0,0,0.1)] rounded-xl"
+               transition-shadow duration-400 ease-in-out
+               hover:shadow-[0_10px_30px_rgba(0,0,0,0.15),0_15px_40px_rgba(0,0,0,0.1)] rounded-xl"
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") onClick?.();
+      }}
     >
       {/* Pinkish hover overlay */}
       <div
         className="absolute inset-0 bg-pink-500 bg-opacity-10
                    scale-x-0 origin-center transition-transform duration-500
                    ease-cubic-bezier(0.4, 0, 0.2, 1) group-hover:scale-x-100 pointer-events-none z-[10]"
-        style={{ transformOrigin: "center" }}
       ></div>
 
       {/* Badge rotated 90 degrees on left */}
@@ -38,6 +47,26 @@ const ProductCard = ({
           {badgeText.toUpperCase()}
         </div>
       )}
+
+      {/* Wishlist heart icon */}
+      <div
+        onClick={(e) => {
+          e.stopPropagation();
+          onToggleWishlist?.();
+        }}
+        className="absolute top-2 right-2 z-20 text-xl text-pink-500 hover:text-pink-700 transition-colors"
+        aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.stopPropagation();
+            onToggleWishlist?.();
+          }
+        }}
+      >
+        {wishlisted ? <FaHeart /> : <FaRegHeart />}
+      </div>
 
       {/* Product image */}
       <div className="mb-2.5 sm:mb-3 product-thumb overflow-hidden rounded-md">
@@ -58,7 +87,7 @@ const ProductCard = ({
           <a href="#">{title}</a>
         </h2>
 
-        {/* Rating stars - hidden on small */}
+        {/* Rating stars */}
         <div className="text-yellow-400 text-xs sm:text-sm mb-1 hidden sm:block">
           {Array.from({ length: 5 }).map((_, i) => (
             <i
@@ -70,6 +99,7 @@ const ProductCard = ({
           ))}
         </div>
 
+        {/* Price */}
         <span className="block text-black font-semibold text-sm sm:text-base mb-2">
           ${price}
         </span>
@@ -78,7 +108,7 @@ const ProductCard = ({
         <button
           onClick={(e) => {
             e.stopPropagation();
-            onAddToCart();
+            onAddToCart?.();
           }}
           className="border border-red-600 text-red-600 uppercase text-xs font-semibold py-1 px-3 rounded hover:bg-red-600 hover:text-white transition-colors duration-300 mx-auto block"
         >

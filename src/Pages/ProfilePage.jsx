@@ -1,14 +1,7 @@
-import React from "react";
-import { LogOut, Mail, MapPin, Phone, User } from "lucide-react";
-
-const user = {
-  name: "Jane Doe",
-  email: "jane.doe@example.com",
-  phone: "+1 234 567 890",
-  address: "123 Main St, Springfield, USA",
-  avatar: "https://unsplash.com/photos/a-man-wearing-glasses-and-a-black-shirt-iEEBWgY_6lAhttps://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  bio: "Fashion-forward & always in style. Exploring trends & setting them.",
-};
+import React, { useEffect, useState } from "react";
+import { LogOut, Mail, User } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import Avatar from "react-avatar";
 
 const orders = [
   {
@@ -38,16 +31,69 @@ const orders = [
 ];
 
 const ProfilePage = () => {
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null); // 🔄 backend user data
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        navigate("/login");
+        return;
+      }
+
+      try {
+        const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/user/me`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!res.ok) throw new Error("Unauthorized");
+
+        const data = await res.json();
+        setUser(data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Fetch user error:", error);
+        navigate("/login");
+      }
+    };
+
+    fetchUser();
+  }, [navigate]);
+
   const handleSignOut = () => {
-    alert("Signed out");
+    localStorage.removeItem("token"); // 🔓 remove JWT
+    navigate("/login");
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-xl font-semibold">
+        Loading...
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-xl font-semibold">
+        Please log in to view your profile.
+      </div>
+    );
+  }
 
   return (
     <section className="bg-white min-h-screen py-14 px-4 font-sans">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-10">
-          <h1 className="text-4xl font-bold tracking-tight" style={{ fontFamily: "'Italiana', serif" }}>
+          <h1
+            className="text-4xl font-bold tracking-tight"
+            style={{ fontFamily: "'Italiana', serif" }}
+          >
             My Profile
           </h1>
           <button
@@ -61,27 +107,21 @@ const ProfilePage = () => {
 
         {/* Profile Card */}
         <div className="bg-[#f9f9f9] border border-black/10 rounded-xl p-8 flex flex-col sm:flex-row items-center sm:items-start gap-8 shadow-md">
-          <img
-            // src={user.avatar}
-            src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            alt="User"
-            className="w-32 h-32 rounded-full border-2 border-black object-cover"
+          <Avatar
+            name={user.name || "Anonymous User"}
+            src={user.photoURL || undefined}
+            size="128"
+            round={true}
+            className="border-2 border-black"
           />
           <div className="flex-1 space-y-3 text-gray-800">
             <h2 className="text-2xl font-semibold flex items-center gap-2">
               <User size={20} />
               {user.name}
             </h2>
-            <p className="italic text-gray-600">{user.bio}</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 text-sm">
               <p className="flex items-center gap-2">
                 <Mail size={16} /> {user.email}
-              </p>
-              <p className="flex items-center gap-2">
-                <Phone size={16} /> {user.phone}
-              </p>
-              <p className="col-span-2 flex items-center gap-2">
-                <MapPin size={16} /> {user.address}
               </p>
             </div>
           </div>
@@ -89,7 +129,12 @@ const ProfilePage = () => {
 
         {/* Order Section */}
         <div className="mt-16">
-          <h3 className="text-2xl font-semibold mb-6" style={{ fontFamily: "'Italiana', serif" }}>My Orders</h3>
+          <h3
+            className="text-2xl font-semibold mb-6"
+            style={{ fontFamily: "'Italiana', serif" }}
+          >
+            My Orders
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {orders.map((order) => (
               <div
@@ -104,7 +149,9 @@ const ProfilePage = () => {
                 <div className="flex-1">
                   <h4 className="font-medium text-lg">{order.productTitle}</h4>
                   <p className="text-sm text-gray-600">${order.price.toFixed(2)}</p>
-                  <p className="text-xs text-gray-500 mt-1">Ordered on {order.orderDate}</p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Ordered on {order.orderDate}
+                  </p>
                 </div>
                 <div>
                   <span

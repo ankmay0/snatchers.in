@@ -5,12 +5,12 @@ const OurStory = () => {
     <section id="our-story" className="py-[90px] px-4 sm:px-6 lg:px-8 bg-white">
       <div className="max-w-screen-xl mx-auto">
         <div className="flex flex-col lg:flex-row items-center gap-12">
-          
+
           {/* Left Side Image */}
           <div className="w-full lg:w-1/2">
             <div className="overflow-hidden rounded-md shadow-lg">
               <img
-                src="https://www.palmonas.com/cdn/shop/files/STORE_-ABOUT_US_af186df3-7cd2-4600-8c6a-d10ebe13bc25.webp?v=1724675509" // Make sure this image exists in your public folder
+                src="https://images.pexels.com/photos/276374/pexels-photo-276374.jpeg" // Make sure this image exists in your public folder
                 alt="Our Story"
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
               />
@@ -37,7 +37,15 @@ const OurStory = () => {
                 fontSize: 'clamp(1rem, 2vw, 1.25rem)',
               }}
             >
-              Born from a passion for elegance and timeless beauty, our jewelry brand blends heritage with modern artistry. Each piece tells a story — handcrafted to perfection using only the finest materials.
+              At Snatchers, we believe jewelry should be a reflection of individuality, strength, and elegance.
+              Our designs are thoughtfully created for both men and women who seek timeless pieces with a modern soul.
+              From signature rose gold hues to ethically sourced gemstones, every detail is crafted with purpose.
+              We blend heritage with innovation to create jewelry that tells your story with grace and power.
+              Each piece is a celebration of style  handcrafted with care and meant to last.
+              True luxury goes beyond appearance; it lies in how something is made and why it matters.
+              Our collections inspire confidence, express personality, and complement every occasion.
+              Whether bold or minimal, each design is made to elevate your everyday and your special days.
+              Discover jewelry that aligns with your vision because at Snatchers, meaning meets style.
             </p>
 
             <p

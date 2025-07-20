@@ -1,44 +1,116 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ProductCard from "../UI/ProductCard";
-import products from "../Data/ProductData.js";
 import { AnimatePresence, motion } from "framer-motion";
+import axios from "axios";
+import { useAuth } from "../contexts/AuthContext"; // ✅ Use context if available
 
 const DateNight = () => {
+  const [products, setProducts] = useState([]);
+  const [wishlist, setWishlist] = useState([]);
   const [activeTab, setActiveTab] = useState("Gifts");
   const navigate = useNavigate();
 
-  const tabOccasionMap = {
-    "Gifts": "gift",
-    "Date night": "datenight",
-    "Traditional": "heritage",
-    "Everyday Wear": "wedding",
+  const { currentUser } = useAuth(); // ✅ Get user from context
+  const userId = currentUser?.uid || "demo-user-123"; // fallback for testing
+  const token = localStorage.getItem("token");
 
+  const placeholderImg =
+    "https://redthread.uoregon.edu/files/original/affd16fd5264cab9197da4cd1a996f820e601ee4.png";
+
+  const tabOccasionMap = {
+    Gifts: "gift",
+    "Date night": "datenight",
+    Traditional: "heritage",
+    "Everyday Wear": "wedding",
   };
 
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/products");
+        setProducts(res.data);
+      } catch (err) {
+        console.error("Error fetching products:", err);
+      }
+    };
+
+    const fetchWishlist = async () => {
+      try {
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_BASE_URL}/api/wishlist`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const productIds = res.data.map((p) => p._id);
+        setWishlist(productIds);
+      } catch (err) {
+        console.error("Error fetching wishlist:", err);
+      }
+    };
+
+    if (token) {
+      fetchProducts();
+      fetchWishlist();
+    }
+  }, [userId, token]);
+
   const filteredProducts = products
-    .filter((p) => p.occasion.includes(tabOccasionMap[activeTab]))
-    .slice(0, );
+    .filter((p) => p.occasion?.includes(tabOccasionMap[activeTab]))
+    .slice(0, 8);
 
   const descriptions = {
     "Date night": "Curated picks to make your evening unforgettable.",
-    "Traditional": "Celebrate timeless heritage with these exclusive picks.",
+    Traditional: "Celebrate timeless heritage with these exclusive picks.",
     "Everyday Wear": "Elegant gifts to mark the beginning of forever.",
-    "Gifts": "Handpicked surprises for every kind of love.",
+    Gifts: "Handpicked surprises for every kind of love.",
   };
 
-  const handleAddToCart = (product) => alert(`Added "${product.title}" to cart!`);
-  const handleWishlist = (product) => alert(`Added "${product.title}" to wishlist!`);
-  const handleCompare = (product) => alert(`Added "${product.title}" to compare!`);
+  const handleAddToCart = (product) =>
+    alert(`Added "${product.title}" to cart!`);
+  const handleCompare = (product) =>
+    alert(`Added "${product.title}" to compare!`);
+
+  const toggleWishlist = async (productId) => {
+    const isWishlisted = wishlist.includes(productId);
+    const url = `${process.env.REACT_APP_API_BASE_URL}/api/wishlist/${productId}`;
+
+    try {
+      if (isWishlisted) {
+        await axios.delete(url, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setWishlist((prev) => prev.filter((id) => id !== productId));
+      } else {
+        await axios.post(
+          url,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setWishlist((prev) => [...prev, productId]);
+      }
+    } catch (err) {
+      console.error("Error updating wishlist:", err);
+    }
+  };
 
   return (
-    <div className="date-night-products max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div className="date-night-products max-w-10xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <motion.h1
         key={activeTab + "-title"}
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className="text-3xl sm:text-4xl lg:text-5xl sm:space-y-4 lg:space-y-10   mb-2 text-center text-gray-800 font-medium"
+        className="text-3xl sm:text-4xl lg:text-5xl mb-2 text-center text-gray-800 font-medium"
         style={{ fontFamily: "'Italiana', serif" }}
       >
         {activeTab} Specials
@@ -49,7 +121,7 @@ const DateNight = () => {
         initial={{ opacity: 0, y: 5 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className="text-center text-sm sm:text-base text-gray-500  mb-6 sm:mb-8"
+        className="text-center text-sm sm:text-base text-gray-500 mb-6 sm:mb-8"
       >
         {descriptions[activeTab]}
       </motion.p>
@@ -78,8 +150,6 @@ const DateNight = () => {
         ))}
       </div>
 
-
-
       <AnimatePresence mode="wait">
         <motion.div
           key={activeTab + "-products"}
@@ -91,17 +161,17 @@ const DateNight = () => {
         >
           {filteredProducts.map((product) => (
             <div
-              key={product.id}
-              onClick={() => navigate(`/product/${product.id}`)}
+              key={product._id}
+              onClick={() => navigate(`/product/${product._id}`)}
               className="cursor-pointer"
               role="button"
               tabIndex={0}
               onKeyPress={(e) => {
-                if (e.key === 'Enter') navigate(`/product/${product.id}`);
+                if (e.key === "Enter") navigate(`/product/${product._id}`);
               }}
             >
               <ProductCard
-                image={product.images[0]}
+                image={product.images?.[0] || placeholderImg}
                 title={product.title}
                 price={`$${product.price}`}
                 rating={product.rating}
@@ -111,12 +181,14 @@ const DateNight = () => {
                 }}
                 onWishlist={(e) => {
                   e.stopPropagation();
-                  handleWishlist(product);
+                  toggleWishlist(product._id);
                 }}
                 onCompare={(e) => {
                   e.stopPropagation();
                   handleCompare(product);
                 }}
+                wishlisted={wishlist.includes(product._id)}
+                onToggleWishlist={() => toggleWishlist(product._id)}
               />
             </div>
           ))}

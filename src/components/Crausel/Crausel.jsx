@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Pagination, EffectFade, Parallax } from 'swiper/modules';
+import { Autoplay, Pagination, EffectFade, Parallax, EffectCards, EffectFlip } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';
@@ -10,7 +10,7 @@ import './Crausel.css'; // Ensure this path is correct
 const slides = [
   {
     title: 'Rubby Store',
-    heading: 'Ring Solitaire Princess',
+    heading: 'Ring Solitaire',
     text: 'Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.',
     image: '/slide-img-1.jpg', // Ensure these images are optimized
   },
@@ -19,6 +19,18 @@ const slides = [
     heading: 'Beautiful Earrings',
     text: 'Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.',
     image: '/slide-img-2.jpg', // Ensure these images are optimized
+  },
+    {
+    title: 'Rubby Store',
+    heading: 'Ring Solitaire',
+    text: 'Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.',
+    image: '/slide-img-5.jpg', // Ensure these images are optimized
+  },
+  {
+    title: 'New Collection 2025',
+    heading: 'Beautiful Earrings',
+    text: 'Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.',
+    image: '/slide-img-4.jpg', // Ensure these images are optimized
   },
 ];
 
@@ -32,7 +44,7 @@ export default function Carousel() {
       <div className="absolute inset-0 z-[-1] clip-path-banner bg-black"></div>
 
       <Swiper
-        modules={[Autoplay, Pagination, EffectFade, Parallax]}
+        modules={[Autoplay, Pagination]}
         effect="fade"
         autoplay={{ delay: 2500, disableOnInteraction: false }}
         loop
@@ -40,7 +52,7 @@ export default function Carousel() {
         onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
         speed={1000}
         parallax={true}
-        className="w-full h-[30vh] sm:h-[70vh] md:h-[80vh] lg:h-[80vh]" // Responsive height
+        className="w-full h-[30vh] sm:h-[70vh] md:h-[80vh] lg:h-[70vh]" // Responsive height
       >
         {slides.map((slide, index) => (
           <SwiperSlide key={index}>
@@ -54,13 +66,15 @@ export default function Carousel() {
               data-swiper-parallax="-20%" // Parallax effect
             >
               {/* Overlay for text readability */}
-              <div className="absolute inset-0 bg-white/60 backdrop-blur-sm z-0" />
+              {/* <div className="absolute inset-0 bg-white/60 backdrop-blur-sm z-0" /> */}
+              
+              <div className="absolute inset-0 z-0" />
 
               <div
                 className="relative z-10 text-gray-900 max-w-3xl" // Max width for content
                 // Base font size for context, individual elements override
                 style={{
-                  fontSize: 'clamp(1rem, 1.8vw, 1.125rem)',
+                  fontSize: 'clamp(0.1rem, 1.8vw, 1.125rem)',
                 }}
               >
                 {/* Title */}
@@ -73,7 +87,7 @@ export default function Carousel() {
                   `}
                   style={{
                     transitionDelay: activeIndex === index ? '300ms' : '0ms',
-                    fontSize: 'clamp(0.875rem, 1.2vw, 1.125rem)',
+                    fontSize: 'clamp(0.575rem, 1vw, 1rem)',
                     lineHeight: '1.3',
                     marginBottom: '0.25rem',
                   }}
@@ -83,11 +97,11 @@ export default function Carousel() {
                 
                 {/* Heading */}
                 <h2
-                  className={`font-montserrat font-bold leading-tight mt-2 mb-0 transition-opacity duration-700 ease-out
+                  className={`font-montserrat font-bold leading-tight  mb-0 transition-opacity duration-700 ease-out
                     ${activeIndex === index ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
                   style={{
                     transitionDelay: activeIndex === index ? '500ms' : '0ms',
-                    fontSize: 'clamp(1.2rem, 5vw, 5rem)', // Fluid font size (e.g., 32px min, scales with 5% of viewport width, max 80px)
+                    fontSize: 'clamp(1rem, 3vw, 3rem)', // Fluid font size (e.g., 32px min, scales with 5% of viewport width, max 80px)
                     lineHeight: '1.1',
                   }}
                 >
@@ -100,7 +114,7 @@ export default function Carousel() {
                     ${activeIndex === index ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
                   style={{
                     transitionDelay: activeIndex === index ? '700ms' : '0ms',
-                    fontSize: 'clamp(0.675rem, 1.2vw, 1.125rem)', // Fluid font size
+                    fontSize: 'clamp(0.675rem, 0.9w, 0.9rem)', // Fluid font size
                     maxWidth: '480px', // Caps paragraph width for readability
                   }}
                 >
