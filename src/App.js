@@ -12,6 +12,7 @@ import ProfilePage from "./Pages/ProfilePage";
 import TopOfferBar from "./components/TopOffer";
 import Login from "./Pages/Login";
 import AddProduct from "./Admin/AddProduct";
+import Wishlist from "./Pages/Wishlist";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/add-product" element={<AddProduct />} />
+          <Route path="/wishlist" element={<Wishlist />} />
 
         </Routes>
         

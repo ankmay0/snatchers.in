@@ -6,10 +6,13 @@ import axios from "axios";
 
 const Mens = () => {
   const [products, setProducts] = useState([]);
+  const [wishlist, setWishlist] = useState([]);
   const navigate = useNavigate();
 
   const placeholderImg =
     "https://redthread.uoregon.edu/files/original/affd16fd5264cab9197da4cd1a996f820e601ee4.png";
+
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -21,14 +24,56 @@ const Mens = () => {
       }
     };
 
+    const fetchWishlist = async () => {
+      try {
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_BASE_URL}/api/wishlist`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const productIds = res.data.map((item) => item._id);
+        setWishlist(productIds);
+      } catch (err) {
+        console.error("Error fetching wishlist:", err);
+      }
+    };
+
     fetchProducts();
-  }, []);
+    if (token) fetchWishlist();
+  }, [token]);
+
+  const toggleWishlist = async (productId) => {
+    const isWishlisted = wishlist.includes(productId);
+    const url = `${process.env.REACT_APP_API_BASE_URL}/api/wishlist/${productId}`;
+
+    try {
+      if (isWishlisted) {
+        await axios.delete(url, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setWishlist((prev) => prev.filter((id) => id !== productId));
+      } else {
+        await axios.post(url, {}, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setWishlist((prev) => [...prev, productId]);
+      }
+    } catch (err) {
+      console.error("Error updating wishlist:", err);
+    }
+  };
 
   const handleAddToCart = (product) => {
     alert(`Added "${product.title}" to cart!`);
   };
 
-  // Frontend filtering (only men's products)
   const mensProducts = products.filter(
     (product) => product.category?.toLowerCase() === "men"
   );
@@ -36,7 +81,6 @@ const Mens = () => {
   return (
     <section className="py-16 bg-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Hero Image and Title */}
         <div className="relative mb-8 w-full">
           <img
             src="/men.jpg"
@@ -81,7 +125,10 @@ const Mens = () => {
               badgeText={product.badgeText}
               badgeClass={product.badgeClass}
               onAddToCart={() => handleAddToCart(product)}
+              onWishlist={() => toggleWishlist(product._id)}
               onClick={() => navigate(`/product/${product._id}`)}
+              wishlisted={wishlist.includes(product._id)}
+              onToggleWishlist={() => toggleWishlist(product._id)}
             />
           ))}
         </div>
@@ -91,4 +138,3 @@ const Mens = () => {
 };
 
 export default Mens;
-// This code defines a React component

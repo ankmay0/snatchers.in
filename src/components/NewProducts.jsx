@@ -8,41 +8,45 @@ const NewProducts = () => {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [wishlist, setWishlist] = useState([]);
+  const [token, setToken] = useState(null);
 
   const placeholderImg =
     "https://redthread.uoregon.edu/files/original/affd16fd5264cab9197da4cd1a996f820e601ee4.png";
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const auth = getAuth();
+        const user = auth.currentUser;
 
-const fetchData = async () => {
-  try {
-    const auth = getAuth();
-    const user = auth.currentUser;
-    const token = user && (await user.getIdToken());
+        if (!user) return;
 
-    const [productRes, wishlistRes] = await Promise.all([
-      axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/products`),
-      axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/wishlist`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }),
-    ]);
+        const idToken = await user.getIdToken();
+        setToken(idToken);
 
-    const sorted = productRes.data.sort(
-      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-    );
-    setProducts(sorted.slice(0, 8));
+        const [productRes, wishlistRes] = await Promise.all([
+          axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/products`),
+          axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/wishlist`, {
+            headers: { Authorization: `Bearer ${idToken}` },
+          }),
+        ]);
 
-    // Extract product IDs from wishlist response
-    const wishlistedIds = wishlistRes.data.map((item) =>
-      item.productId ? item.productId : item // depends on your backend response shape
-    );
-    setWishlist(wishlistedIds);
-  } catch (err) {
-    console.error("Error fetching products or wishlist:", err);
-  }
-};
+        const sorted = productRes.data.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+        setProducts(sorted.slice(0, 8));
+
+        const wishlistedIds = wishlistRes.data.map((item) =>
+          typeof item === "object" && item.productId
+            ? item.productId._id || item.productId
+            : item._id || item
+        );
+
+        setWishlist(wishlistedIds);
+      } catch (err) {
+        console.error("Error fetching products or wishlist:", err);
+      }
+    };
 
     fetchData();
   }, []);
@@ -56,23 +60,54 @@ const fetchData = async () => {
   const handleCompare = (product) =>
     alert(`Added "${product.title}" to compare!`);
 
-  const toggleWishlist = async (productId) => {
-    const isWishlisted = wishlist.includes(productId);
+const toggleWishlist = async (eventOrProductId, maybeProductId) => {
+  let event = null;
+  let productId = null;
 
-    try {
-      if (isWishlisted) {
-        await axios.delete(`${process.env.REACT_APP_API_BASE_URL}/api/wishlist/${productId}`);
-        setWishlist((prev) => prev.filter((id) => id !== productId));
-      } else {
-        await axios.post(`${process.env.REACT_APP_API_BASE_URL}/api/wishlist`, {
-          productId,
-        });
-        setWishlist((prev) => [...prev, productId]);
-      }
-    } catch (err) {
-      console.error("Error updating wishlist:", err);
+  // Determine if two arguments were passed (event, productId)
+  if (maybeProductId) {
+    event = eventOrProductId;
+    productId = maybeProductId;
+
+    if (event?.stopPropagation) {
+      event.stopPropagation();
     }
-  };
+  } else {
+    productId = eventOrProductId;
+  }
+
+  if (!token) return;
+
+  const isWishlisted = wishlist.includes(productId);
+
+  try {
+    if (isWishlisted) {
+      await axios.delete(
+        `${process.env.REACT_APP_API_BASE_URL}/api/wishlist/${productId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setWishlist((prev) => prev.filter((id) => id !== productId));
+    } else {
+      await axios.post(
+        `${process.env.REACT_APP_API_BASE_URL}/api/wishlist`,
+        { productId },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setWishlist((prev) => [...prev, productId]);
+    }
+  } catch (error) {
+    console.error("Error updating wishlist:", error);
+  }
+};
+
 
   return (
     <>
@@ -108,7 +143,7 @@ const fetchData = async () => {
                 badgeText={product.badgeText}
                 badgeClass={product.badgeClass}
                 wishlisted={wishlist.includes(product._id)}
-                onToggleWishlist={() => toggleWishlist(product._id)}
+                onToggleWishlist={(e) => toggleWishlist(e, product._id)}
                 onAddToCart={(e) => {
                   e.stopPropagation();
                   handleAddToCart(product);

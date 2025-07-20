@@ -3,10 +3,15 @@ import { useNavigate } from "react-router-dom";
 import ProductCard from "../UI/ProductCard";
 import { motion } from "framer-motion";
 import axios from "axios";
+import { useAuth } from "../contexts/AuthContext";
 
 const Womens = () => {
   const [products, setProducts] = useState([]);
+  const [wishlist, setWishlist] = useState([]);
   const navigate = useNavigate();
+
+  const { currentUser } = useAuth();
+  const token = localStorage.getItem("token");
 
   const placeholderImg =
     "https://redthread.uoregon.edu/files/original/affd16fd5264cab9197da4cd1a996f820e601ee4.png";
@@ -21,11 +26,50 @@ const Womens = () => {
       }
     };
 
+    const fetchWishlist = async () => {
+      try {
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_BASE_URL}/api/wishlist`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const productIds = res.data.map((p) => p._id);
+        setWishlist(productIds);
+      } catch (err) {
+        console.error("Error fetching wishlist:", err);
+      }
+    };
+
     fetchProducts();
-  }, []);
+    if (token) fetchWishlist();
+  }, [token]);
 
   const handleAddToCart = (product) => {
     alert(`Added "${product.title}" to cart!`);
+  };
+
+  const toggleWishlist = async (productId) => {
+    const isWishlisted = wishlist.includes(productId);
+    const url = `${process.env.REACT_APP_API_BASE_URL}/api/wishlist/${productId}`;
+
+    try {
+      if (isWishlisted) {
+        await axios.delete(url, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setWishlist((prev) => prev.filter((id) => id !== productId));
+      } else {
+        await axios.post(url, {}, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setWishlist((prev) => [...prev, productId]);
+      }
+    } catch (err) {
+      console.error("Error updating wishlist:", err);
+    }
   };
 
   const womensProducts = products.filter(
@@ -81,7 +125,9 @@ const Womens = () => {
               rating={product.rating}
               badgeText={product.badgeText}
               badgeClass={product.badgeClass}
+              wishlisted={wishlist.includes(product._id)}
               onAddToCart={() => handleAddToCart(product)}
+              onToggleWishlist={() => toggleWishlist(product._id)}
               onClick={() => navigate(`/product/${product._id}`)}
             />
           ))}
