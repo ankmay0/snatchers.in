@@ -182,21 +182,20 @@ const Navbar = () => {
             <a href="/contact" className="hover:text-indigo-600">
               Contact Us
             </a>
+
           </nav>
         </div>
       </header>
 
       <div
-        className={`fixed inset-0 bg-black bg-opacity-50 z-30 transition-opacity duration-300 ${
-          isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-        }`}
+        className={`fixed inset-0 bg-black bg-opacity-50 z-30 transition-opacity duration-300 ${isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+          }`}
         onClick={() => setIsMobileMenuOpen(false)}
       ></div>
 
       <div
-        className={`fixed top-0 right-0 h-full w-64 bg-white shadow-lg z-50 transform transition-transform duration-300 ease-in-out ${
-          isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}
+        className={`fixed top-0 right-0 h-full w-64 bg-white shadow-lg z-50 transform transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+          }`}
       >
         <div className="flex items-center justify-between p-4 border-b">
           <span className="text-lg font-semibold text-gray-800">Menu</span>
@@ -205,22 +204,14 @@ const Navbar = () => {
           </button>
         </div>
         <nav className="flex flex-col p-4 space-y-4 text-gray-700 text-md font-thin">
-          <a href="/" className="hover:text-indigo-600">
-            Home
-          </a>
-          <a href="/shop" className="hover:text-indigo-600">
-            Shop
-          </a>
-          <a href="/mens" className="hover:text-indigo-600">
-            Men
-          </a>
-          <a href="/womens" className="hover:text-indigo-600">
-            Women
-          </a>
-          <a href="/about" className="hover:text-indigo-600">
-            Contact Us
-          </a>
+          <a href="/" className="hover:text-indigo-600">Home</a>
+          <a href="/shop" className="hover:text-indigo-600">Shop</a>
+          <a href="/mens" className="hover:text-indigo-600">Men</a>
+          <a href="/womens" className="hover:text-indigo-600">Women</a>
+          <a href="/about" className="hover:text-indigo-600">About Us</a>
+          <a href="/contact" className="hover:text-indigo-600">Contact Us</a>
         </nav>
+
       </div>
     </>
   );
