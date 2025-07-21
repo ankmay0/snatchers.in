@@ -93,46 +93,15 @@ const Navbar = () => {
                   </span>
                 )}
               </a>
-
-
-              <div className="relative group">
-                <button className="relative hover:text-indigo-600 lg:text-2xl">
-                  <FaShoppingBag />
+              <a href="/cart" className="relative hover:text-indigo-600 lg:text-2xl">
+                <FaShoppingBag />
+                {cartItems.length > 0 && (
                   <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1 rounded-full">
                     {cartItems.length}
                   </span>
-                </button>
-                <div className="absolute right-0 mt-3 w-80 bg-white border shadow-lg p-4 hidden group-hover:block z-50">
-                  {cartItems.length > 0 ? (
-                    cartItems.map((item, i) => (
-                      <div key={i} className="flex items-center space-x-4 mb-4">
-                        <img
-                          src={item.image}
-                          alt={item.name}
-                          className="w-12 h-12 object-cover"
-                        />
-                        <div>
-                          <h2 className="text-sm font-medium">{item.name}</h2>
-                          <p className="text-sm text-gray-600">
-                            {item.quantity} × ₹{item.price}
-                          </p>
-                        </div>
-                        <button>
-                          <FaTrashAlt className="text-red-500 lg:text-2xl" />
-                        </button>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-center text-sm text-gray-500">Cart is empty</p>
-                  )}
-                  <a
-                    href="/checkout.html"
-                    className="block w-full text-center bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700"
-                  >
-                    Checkout
-                  </a>
-                </div>
-              </div>
+                )}
+              </a>
+
 
               <a
                 href="/profile"

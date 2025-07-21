@@ -3,55 +3,61 @@ import { useNavigate } from "react-router-dom";
 import ProductCard from "../UI/ProductCard";
 import { motion } from "framer-motion";
 import axios from "axios";
-import { useAuth } from "../contexts/AuthContext";
+import { getAuth } from "firebase/auth";
 
 const Womens = () => {
   const [products, setProducts] = useState([]);
   const [wishlist, setWishlist] = useState([]);
+  const [cart, setCart] = useState([]);
+  const [token, setToken] = useState(null);
   const navigate = useNavigate();
-
-  const { currentUser } = useAuth();
-  const token = localStorage.getItem("token");
 
   const placeholderImg =
     "https://redthread.uoregon.edu/files/original/affd16fd5264cab9197da4cd1a996f820e601ee4.png";
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchData = async () => {
       try {
-        const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/products`);
-        setProducts(res.data);
-      } catch (err) {
-        console.error("Error fetching products:", err);
-      }
-    };
+        const auth = getAuth();
+        const user = auth.currentUser;
+        if (!user) return;
 
-    const fetchWishlist = async () => {
-      try {
-        const res = await axios.get(
-          `${process.env.REACT_APP_API_BASE_URL}/api/wishlist`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
+        const idToken = await user.getIdToken();
+        setToken(idToken);
+
+        const [productsRes, wishlistRes, cartRes] = await Promise.all([
+          axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/products`),
+          axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/wishlist`, {
+            headers: { Authorization: `Bearer ${idToken}` },
+          }),
+          axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/cart`, {
+            headers: { Authorization: `Bearer ${idToken}` },
+          }),
+        ]);
+
+        setProducts(productsRes.data);
+
+        const wishlistedIds = wishlistRes.data.map((item) =>
+          typeof item === "object" && item.productId
+            ? item.productId._id || item.productId
+            : item._id || item
         );
-        const productIds = res.data.map((p) => p._id);
-        setWishlist(productIds);
+        setWishlist(wishlistedIds);
+
+        const cartIds = cartRes.data.map((item) => item.product._id);
+        setCart(cartIds);
       } catch (err) {
-        console.error("Error fetching wishlist:", err);
+        console.error("Error fetching women's data:", err);
       }
     };
 
-    fetchProducts();
-    if (token) fetchWishlist();
-  }, [token]);
+    fetchData();
+  }, []);
 
-  const handleAddToCart = (product) => {
-    alert(`Added "${product.title}" to cart!`);
-  };
+  const toggleWishlist = async (e, productId) => {
+    e?.stopPropagation?.();
+    if (!token) return;
 
-  const toggleWishlist = async (productId) => {
     const isWishlisted = wishlist.includes(productId);
     const url = `${process.env.REACT_APP_API_BASE_URL}/api/wishlist/${productId}`;
 
@@ -69,6 +75,30 @@ const Womens = () => {
       }
     } catch (err) {
       console.error("Error updating wishlist:", err);
+    }
+  };
+
+  const toggleCart = async (e, productId) => {
+    e?.stopPropagation?.();
+    if (!token) return;
+
+    const isInCart = cart.includes(productId);
+    const url = `${process.env.REACT_APP_API_BASE_URL}/api/cart/${productId}`;
+
+    try {
+      if (isInCart) {
+        await axios.delete(url, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setCart((prev) => prev.filter((id) => id !== productId));
+      } else {
+        await axios.post(url, {}, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setCart((prev) => [...prev, productId]);
+      }
+    } catch (err) {
+      console.error("Error updating cart:", err);
     }
   };
 
@@ -117,19 +147,30 @@ const Womens = () => {
         {/* Product Grid */}
         <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {womensProducts.map((product) => (
-            <ProductCard
+            <div
               key={product._id}
-              image={product.images?.[0] || placeholderImg}
-              title={product.title}
-              price={product.price}
-              rating={product.rating}
-              badgeText={product.badgeText}
-              badgeClass={product.badgeClass}
-              wishlisted={wishlist.includes(product._id)}
-              onAddToCart={() => handleAddToCart(product)}
-              onToggleWishlist={() => toggleWishlist(product._id)}
               onClick={() => navigate(`/product/${product._id}`)}
-            />
+              className="cursor-pointer"
+              role="button"
+              tabIndex={0}
+              onKeyPress={(e) => {
+                if (e.key === "Enter") navigate(`/product/${product._id}`);
+              }}
+            >
+              <ProductCard
+                image={product.images?.[0] || placeholderImg}
+                title={product.title}
+                price={product.price}
+                rating={product.rating}
+                badgeText={product.badgeText}
+                badgeClass={product.badgeClass}
+                wishlisted={wishlist.includes(product._id)}
+                isInCart={cart.includes(product._id)}
+                onToggleWishlist={(e) => toggleWishlist(e, product._id)}
+                onAddToCart={(e) => toggleCart(e, product._id)}
+                onRemoveFromCart={(e) => toggleCart(e, product._id)}
+              />
+            </div>
           ))}
         </div>
       </div>

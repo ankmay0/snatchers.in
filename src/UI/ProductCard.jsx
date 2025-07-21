@@ -7,6 +7,8 @@ const ProductCard = ({
   price,
   rating = 0,
   onAddToCart,
+  onRemoveFromCart,
+  isInCart = false,
   badgeText,
   badgeClass = "bg-black",
   onClick,
@@ -101,18 +103,22 @@ const ProductCard = ({
 
         {/* Price */}
         <span className="block text-black font-semibold text-sm sm:text-base mb-2">
-          ${price}
+          ₹{price}
         </span>
 
-        {/* Add to cart button */}
+        {/* Add/Remove from cart button */}
         <button
           onClick={(e) => {
             e.stopPropagation();
-            onAddToCart?.();
+            isInCart ? onRemoveFromCart?.() : onAddToCart?.();
           }}
-          className="border border-red-600 text-red-600 uppercase text-xs font-semibold py-1 px-3 rounded hover:bg-red-600 hover:text-white transition-colors duration-300 mx-auto block"
+          className={`border ${
+            isInCart
+              ? "border-gray-600 text-gray-600 hover:bg-gray-600 hover:text-white"
+              : "border-red-600 text-red-600 hover:bg-red-600 hover:text-white"
+          } uppercase text-xs font-semibold py-1 px-3 rounded transition-colors duration-300 mx-auto block`}
         >
-          Add to Cart
+          {isInCart ? "Remove from Cart" : "Add to Cart"}
         </button>
       </div>
     </div>

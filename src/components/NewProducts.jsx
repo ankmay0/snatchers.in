@@ -8,6 +8,7 @@ const NewProducts = () => {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [wishlist, setWishlist] = useState([]);
+  const [cart, setCart] = useState([]);
   const [token, setToken] = useState(null);
 
   const placeholderImg =
@@ -23,9 +24,12 @@ const NewProducts = () => {
         const idToken = await user.getIdToken();
         setToken(idToken);
 
-        const [productRes, wishlistRes] = await Promise.all([
+        const [productRes, wishlistRes, cartRes] = await Promise.all([
           axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/products`),
           axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/wishlist`, {
+            headers: { Authorization: `Bearer ${idToken}` },
+          }),
+          axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/cart`, {
             headers: { Authorization: `Bearer ${idToken}` },
           }),
         ]);
@@ -41,26 +45,19 @@ const NewProducts = () => {
             : item._id || item
         );
         setWishlist(wishlistedIds);
+
+        const cartProductIds = cartRes.data.map((item) => item.product._id);
+        setCart(cartProductIds);
       } catch (err) {
-        console.error("Error fetching products or wishlist:", err);
+        console.error("Error fetching data:", err);
       }
     };
 
     fetchData();
   }, []);
 
-  const handleAddToCart = (product) =>
-    alert(`Added "${product.title}" to cart!`);
-
-  const handleQuickView = (product) =>
-    alert(`Quick view for "${product.title}"`);
-
-  const handleCompare = (product) =>
-    alert(`Added "${product.title}" to compare!`);
-
   const toggleWishlist = async (e, productId) => {
     e?.stopPropagation?.();
-
     if (!token) return;
 
     const isWishlisted = wishlist.includes(productId);
@@ -73,17 +70,37 @@ const NewProducts = () => {
         });
         setWishlist((prev) => prev.filter((id) => id !== productId));
       } else {
-        await axios.post(
-          url,
-          {},
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        await axios.post(url, {}, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         setWishlist((prev) => [...prev, productId]);
       }
     } catch (err) {
       console.error("Error updating wishlist:", err);
+    }
+  };
+
+  const toggleCart = async (e, productId) => {
+    e?.stopPropagation?.();
+    if (!token) return;
+
+    const isInCart = cart.includes(productId);
+    const url = `${process.env.REACT_APP_API_BASE_URL}/api/cart/${productId}`;
+
+    try {
+      if (isInCart) {
+        await axios.delete(url, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setCart((prev) => prev.filter((id) => id !== productId));
+      } else {
+        await axios.post(`${process.env.REACT_APP_API_BASE_URL}/api/cart/${productId}`, { }, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setCart((prev) => [...prev, productId]);
+      }
+    } catch (err) {
+      console.error("Error updating cart:", err);
     }
   };
 
@@ -121,19 +138,10 @@ const NewProducts = () => {
                 badgeText={product.badgeText}
                 badgeClass={product.badgeClass}
                 wishlisted={wishlist.includes(product._id)}
+                isInCart={cart.includes(product._id)} // 👈 Cart state
                 onToggleWishlist={(e) => toggleWishlist(e, product._id)}
-                onAddToCart={(e) => {
-                  e.stopPropagation();
-                  handleAddToCart(product);
-                }}
-                onQuickView={(e) => {
-                  e.stopPropagation();
-                  handleQuickView(product);
-                }}
-                onCompare={(e) => {
-                  e.stopPropagation();
-                  handleCompare(product);
-                }}
+                onAddToCart={(e) => toggleCart(e, product._id)} // 👈 Add
+                onRemoveFromCart={(e) => toggleCart(e, product._id)} // 👈 Remove
               />
             </div>
           ))}

@@ -3,16 +3,17 @@ import { useNavigate } from "react-router-dom";
 import ProductCard from "../UI/ProductCard";
 import { AnimatePresence, motion } from "framer-motion";
 import axios from "axios";
-import { useAuth } from "../contexts/AuthContext"; // ✅ Use context if available
+import { useAuth } from "../contexts/AuthContext";
 
 const DateNight = () => {
   const [products, setProducts] = useState([]);
   const [wishlist, setWishlist] = useState([]);
+  const [cart, setCart] = useState([]);
   const [activeTab, setActiveTab] = useState("Gifts");
   const navigate = useNavigate();
 
-  const { currentUser } = useAuth(); // ✅ Get user from context
-  const userId = currentUser?.uid || "demo-user-123"; // fallback for testing
+  const { currentUser } = useAuth();
+  const userId = currentUser?.uid || "demo-user-123";
   const token = localStorage.getItem("token");
 
   const placeholderImg =
@@ -37,14 +38,9 @@ const DateNight = () => {
 
     const fetchWishlist = async () => {
       try {
-        const res = await axios.get(
-          `${process.env.REACT_APP_API_BASE_URL}/api/wishlist`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/wishlist`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         const productIds = res.data.map((p) => p._id);
         setWishlist(productIds);
       } catch (err) {
@@ -52,11 +48,24 @@ const DateNight = () => {
       }
     };
 
+    const fetchCart = async () => {
+      try {
+        const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/cart`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const productIds = res.data.map((item) => item.product._id);
+        setCart(productIds);
+      } catch (err) {
+        console.error("Error fetching cart:", err);
+      }
+    };
+
     if (token) {
       fetchProducts();
       fetchWishlist();
+      fetchCart();
     }
-  }, [userId, token]);
+  }, [token]);
 
   const filteredProducts = products
     .filter((p) => p.occasion?.includes(tabOccasionMap[activeTab]))
@@ -69,11 +78,6 @@ const DateNight = () => {
     Gifts: "Handpicked surprises for every kind of love.",
   };
 
-  const handleAddToCart = (product) =>
-    alert(`Added "${product.title}" to cart!`);
-  const handleCompare = (product) =>
-    alert(`Added "${product.title}" to compare!`);
-
   const toggleWishlist = async (productId) => {
     const isWishlisted = wishlist.includes(productId);
     const url = `${process.env.REACT_APP_API_BASE_URL}/api/wishlist/${productId}`;
@@ -81,25 +85,39 @@ const DateNight = () => {
     try {
       if (isWishlisted) {
         await axios.delete(url, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
         setWishlist((prev) => prev.filter((id) => id !== productId));
       } else {
-        await axios.post(
-          url,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        await axios.post(url, {}, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         setWishlist((prev) => [...prev, productId]);
       }
     } catch (err) {
       console.error("Error updating wishlist:", err);
+    }
+  };
+
+  const toggleCart = async (productId) => {
+    const isInCart = cart.includes(productId);
+    const url = `${process.env.REACT_APP_API_BASE_URL}/api/cart/${productId}`;
+
+    try {
+      if (isInCart) {
+        await axios.delete(url, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setCart((prev) => prev.filter((id) => id !== productId));
+      } else {
+        await axios.post(`${process.env.REACT_APP_API_BASE_URL}/api/cart/${productId}`, {}, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        setCart((prev) => [...prev, productId]);
+      }
+    } catch (err) {
+      console.error("Error updating cart:", err);
     }
   };
 
@@ -139,11 +157,10 @@ const DateNight = () => {
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-1 py-1 border-2 rounded-xl p-2 transition text-xs sm:text-2xl md:text-3xl font-medium flex-shrink-0 ${
-              activeTab === tab
+            className={`px-1 py-1 border-2 rounded-xl p-2 transition text-xs sm:text-2xl md:text-3xl font-medium flex-shrink-0 ${activeTab === tab
                 ? "border-black text-black"
                 : "border-transparent text-gray-500 hover:text-red-600"
-            }`}
+              }`}
           >
             {tab}
           </button>
@@ -173,22 +190,13 @@ const DateNight = () => {
               <ProductCard
                 image={product.images?.[0] || placeholderImg}
                 title={product.title}
-                price={`$${product.price}`}
+                price={product.price}
                 rating={product.rating}
-                onAddToCart={(e) => {
-                  e.stopPropagation();
-                  handleAddToCart(product);
-                }}
-                onWishlist={(e) => {
-                  e.stopPropagation();
-                  toggleWishlist(product._id);
-                }}
-                onCompare={(e) => {
-                  e.stopPropagation();
-                  handleCompare(product);
-                }}
                 wishlisted={wishlist.includes(product._id)}
                 onToggleWishlist={() => toggleWishlist(product._id)}
+                isInCart={cart.includes(product._id)} // 👈 Cart toggle
+                onAddToCart={() => toggleCart(product._id)}
+                onRemoveFromCart={() => toggleCart(product._id)}
               />
             </div>
           ))}

@@ -13,34 +13,40 @@ import TopOfferBar from "./components/TopOffer";
 import Login from "./Pages/Login";
 import AddProduct from "./Admin/AddProduct";
 import Wishlist from "./Pages/Wishlist";
+import { CartProvider } from './contexts/CartContext';
+import Cart from "./Pages/Cart";
 
 function App() {
   return (
+
     <>
-    <TopOfferBar />
-    <Navbar />
-    
-    <main className="pt-36 lg:pt-19">
-      <Router>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/shop" element={<Shop />} />
-          <Route path="/mens" element={<Mens />} />
-          <Route path="/womens" element={<Womens />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/product/:productId" element={<ProductDialog />} />
-          <Route path="/category-shop" element={<CategoryShop />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/add-product" element={<AddProduct />} />
-          <Route path="/wishlist" element={<Wishlist />} />
+      <CartProvider>
+        <TopOfferBar />
+        <Navbar />
 
-        </Routes>
-        
-      </Router>
-    </main>
+        <main className="pt-36 lg:pt-19">
+          <Router>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/shop" element={<Shop />} />
+              <Route path="/mens" element={<Mens />} />
+              <Route path="/womens" element={<Womens />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/product/:productId" element={<ProductDialog />} />
+              <Route path="/category-shop" element={<CategoryShop />} />
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/add-product" element={<AddProduct />} />
+              <Route path="/wishlist" element={<Wishlist />} />
+              <Route path="/cart" element={<Cart />} />
 
-      <Footer />
+            </Routes>
+
+          </Router>
+        </main>
+
+        <Footer />
+      </CartProvider>
     </>
 
   );
