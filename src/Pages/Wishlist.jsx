@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
-// import './Wishlist.css'; // If using custom styles
+import ProductCard from '../UI/ProductCard';
 import { useNavigate } from 'react-router-dom';
+import AnimatedHeading from '../UI/AnimatedHeading'; // Adjust path as needed
+
+const placeholderImg = '/placeholder.png'; // Replace with your actual path if different
 
 const Wishlist = () => {
   const [wishlist, setWishlist] = useState([]);
@@ -18,10 +20,10 @@ const Wishlist = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      setWishlist(res.data.wishlist || []);
-      setLoading(false);
+      setWishlist(res.data);
     } catch (error) {
-      console.error('Failed to fetch wishlist:', error);
+      console.error('Failed to fetch wishlist:', error.response?.data || error.message);
+    } finally {
       setLoading(false);
     }
   };
@@ -35,54 +37,67 @@ const Wishlist = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      setWishlist(wishlist.filter((item) => item._id !== productId));
+      setWishlist((prev) => prev.filter((item) => item._id !== productId));
     } catch (error) {
       console.error('Error removing from wishlist:', error);
     }
+  };
+
+  const handleAddToCart = (product) => {
+    console.log('Add to cart:', product);
+    // Your cart logic here
+  };
+
+  const handleCompare = (product) => {
+    console.log('Compare:', product);
+    // Your compare logic here
+  };
+
+  const toggleWishlist = (productId) => {
+    removeFromWishlist(productId); // Directly remove for now
   };
 
   useEffect(() => {
     fetchWishlist();
   }, []);
 
-  if (loading) return <div className="text-center mt-10 text-lg">Loading your wishlist...</div>;
+  if (loading) {
+    return <div className="text-center mt-10 text-lg font-medium text-gray-600">Loading your wishlist...</div>;
+  }
 
   return (
-    <div className="p-4 sm:p-8 bg-white min-h-screen">
-      <h2 className="text-2xl font-semibold text-center mb-6 text-gray-800">Your Wishlist</h2>
+    <div className="px-4 sm:px-8 py-6 min-h-screen bg-gray-50">
+      <AnimatedHeading
+        heading="Your Wishlist"
+        subheading="All the products you love in one place."
+      />
 
       {wishlist.length === 0 ? (
-        <p className="text-center text-gray-500">Your wishlist is empty.</p>
+        <p className="text-center text-gray-500 text-lg">Your wishlist is empty.</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {wishlist.map((item) => (
-            <div
-              key={item._id}
-              className="bg-white rounded-xl shadow-md hover:shadow-lg transition p-4 relative"
-            >
-              <img
-                src={item.image}
-                alt={item.title}
-                className="w-full h-48 object-cover rounded-lg cursor-pointer"
-                onClick={() => navigate(`/product/${item._id}`)}
-              />
-              <div className="mt-4">
-                <h3
-                  className="text-lg font-semibold text-gray-800 cursor-pointer hover:text-blue-600"
-                  onClick={() => navigate(`/product/${item._id}`)}
-                >
-                  {item.title}
-                </h3>
-                <p className="text-sm text-gray-600 mt-1">₹{item.price}</p>
-                <p className="text-sm text-yellow-500 mt-1">⭐ {item.rating}</p>
-              </div>
-              <button
-                className="absolute top-4 right-4 text-red-500 hover:text-red-700"
-                onClick={() => removeFromWishlist(item._id)}
-              >
-                <AiFillHeart size={24} />
-              </button>
-            </div>
+          {wishlist.map((product) => (
+            <ProductCard
+              key={product._id}
+              image={product.images?.[0] || placeholderImg}
+              title={product.title}
+              price={`₹${product.price}`}
+              rating={product.rating}
+              onAddToCart={(e) => {
+                e.stopPropagation();
+                handleAddToCart(product);
+              }}
+              onWishlist={(e) => {
+                e.stopPropagation();
+                toggleWishlist(product._id);
+              }}
+              onCompare={(e) => {
+                e.stopPropagation();
+                handleCompare(product);
+              }}
+              wishlisted={true}
+              onToggleWishlist={() => toggleWishlist(product._id)}
+            />
           ))}
         </div>
       )}

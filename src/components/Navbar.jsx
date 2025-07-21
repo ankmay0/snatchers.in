@@ -85,14 +85,15 @@ const Navbar = () => {
             </div>
 
             <div className="flex items-center space-x-6 ml-auto">
-              <button className="relative hover:text-indigo-600 lg:text-2xl">
+              <a href="/wishlist" className="relative hover:text-indigo-600 lg:text-2xl">
                 <FaHeart />
                 {wishlistCount > 0 && (
                   <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1 rounded-full">
                     {wishlistCount}
                   </span>
                 )}
-              </button>
+              </a>
+
 
               <div className="relative group">
                 <button className="relative hover:text-indigo-600 lg:text-2xl">
