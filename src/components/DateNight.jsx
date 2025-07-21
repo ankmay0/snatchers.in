@@ -10,11 +10,10 @@ const DateNight = () => {
   const [wishlist, setWishlist] = useState([]);
   const [cart, setCart] = useState([]);
   const [activeTab, setActiveTab] = useState("Gifts");
+  const [token, setToken] = useState(null);
   const navigate = useNavigate();
 
   const { currentUser } = useAuth();
-  const userId = currentUser?.uid || "demo-user-123";
-  const token = localStorage.getItem("token");
 
   const placeholderImg =
     "https://redthread.uoregon.edu/files/original/affd16fd5264cab9197da4cd1a996f820e601ee4.png";
@@ -27,6 +26,18 @@ const DateNight = () => {
   };
 
   useEffect(() => {
+    const fetchAuthToken = async () => {
+      if (currentUser) {
+        const freshToken = await currentUser.getIdToken();
+        setToken(freshToken);
+      }
+    };
+    fetchAuthToken();
+  }, [currentUser]);
+
+  useEffect(() => {
+    if (!token) return;
+
     const fetchProducts = async () => {
       try {
         const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/products`);
@@ -53,35 +64,24 @@ const DateNight = () => {
         const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/cart`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        const productIds = res.data.map((item) => item.product._id);
+        const productIds = res.data.map((item) =>
+          item.product ? item.product._id : item._id // handle nested structure if needed
+        );
         setCart(productIds);
       } catch (err) {
         console.error("Error fetching cart:", err);
       }
     };
 
-    if (token) {
-      fetchProducts();
-      fetchWishlist();
-      fetchCart();
-    }
+    fetchProducts();
+    fetchWishlist();
+    fetchCart();
   }, [token]);
 
-  const filteredProducts = products
-    .filter((p) => p.occasion?.includes(tabOccasionMap[activeTab]))
-    .slice(0, 8);
-
-  const descriptions = {
-    "Date night": "Curated picks to make your evening unforgettable.",
-    Traditional: "Celebrate timeless heritage with these exclusive picks.",
-    "Everyday Wear": "Elegant gifts to mark the beginning of forever.",
-    Gifts: "Handpicked surprises for every kind of love.",
-  };
-
   const toggleWishlist = async (productId) => {
+    if (!token) return;
     const isWishlisted = wishlist.includes(productId);
     const url = `${process.env.REACT_APP_API_BASE_URL}/api/wishlist/${productId}`;
-
     try {
       if (isWishlisted) {
         await axios.delete(url, {
@@ -100,9 +100,9 @@ const DateNight = () => {
   };
 
   const toggleCart = async (productId) => {
+    if (!token) return;
     const isInCart = cart.includes(productId);
     const url = `${process.env.REACT_APP_API_BASE_URL}/api/cart/${productId}`;
-
     try {
       if (isInCart) {
         await axios.delete(url, {
@@ -110,15 +110,25 @@ const DateNight = () => {
         });
         setCart((prev) => prev.filter((id) => id !== productId));
       } else {
-        await axios.post(`${process.env.REACT_APP_API_BASE_URL}/api/cart/${productId}`, {}, {
+        await axios.post(url, {}, {
           headers: { Authorization: `Bearer ${token}` },
         });
-
         setCart((prev) => [...prev, productId]);
       }
     } catch (err) {
       console.error("Error updating cart:", err);
     }
+  };
+
+  const filteredProducts = products
+    .filter((p) => p.occasion?.includes(tabOccasionMap[activeTab]))
+    .slice(0, 8);
+
+  const descriptions = {
+    "Date night": "Curated picks to make your evening unforgettable.",
+    Traditional: "Celebrate timeless heritage with these exclusive picks.",
+    "Everyday Wear": "Elegant gifts to mark the beginning of forever.",
+    Gifts: "Handpicked surprises for every kind of love.",
   };
 
   return (
@@ -157,10 +167,11 @@ const DateNight = () => {
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-1 py-1 border-2 rounded-xl p-2 transition text-xs sm:text-2xl md:text-3xl font-medium flex-shrink-0 ${activeTab === tab
+            className={`px-1 py-1 border-2 rounded-xl p-2 transition text-xs sm:text-2xl md:text-3xl font-medium flex-shrink-0 ${
+              activeTab === tab
                 ? "border-black text-black"
                 : "border-transparent text-gray-500 hover:text-red-600"
-              }`}
+            }`}
           >
             {tab}
           </button>
@@ -194,7 +205,7 @@ const DateNight = () => {
                 rating={product.rating}
                 wishlisted={wishlist.includes(product._id)}
                 onToggleWishlist={() => toggleWishlist(product._id)}
-                isInCart={cart.includes(product._id)} // 👈 Cart toggle
+                isInCart={cart.includes(product._id)}
                 onAddToCart={() => toggleCart(product._id)}
                 onRemoveFromCart={() => toggleCart(product._id)}
               />

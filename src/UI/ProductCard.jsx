@@ -106,20 +106,20 @@ const ProductCard = ({
           ₹{price}
         </span>
 
-        {/* Add/Remove from cart button */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            isInCart ? onRemoveFromCart?.() : onAddToCart?.();
-          }}
-          className={`border ${
-            isInCart
-              ? "border-gray-600 text-gray-600 hover:bg-gray-600 hover:text-white"
-              : "border-red-600 text-red-600 hover:bg-red-600 hover:text-white"
-          } uppercase text-xs font-semibold py-1 px-3 rounded transition-colors duration-300 mx-auto block`}
-        >
-          {isInCart ? "Remove from Cart" : "Add to Cart"}
-        </button>
+        {/* Add/Remove from cart button */}<button
+  onClick={(e) => {
+    e.stopPropagation();
+    isInCart ? onRemoveFromCart?.() : onAddToCart?.();
+  }}
+  className={`border ${
+    isInCart
+      ? "border-gray-600 text-gray-600 hover:bg-gray-600 hover:text-white"
+      : "border-red-600 text-red-600 hover:bg-red-600 hover:text-white"
+  } uppercase text-xs font-semibold py-1 px-3 rounded transition-colors duration-300 mx-auto block`}
+>
+  {isInCart ? "Remove from Cart" : "Add to Cart"}
+</button>
+
       </div>
     </div>
   );
