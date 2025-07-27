@@ -15,6 +15,8 @@ import AddProduct from "./Admin/AddProduct";
 import Wishlist from "./Pages/Wishlist";
 import { CartProvider } from './contexts/CartContext';
 import Cart from "./Pages/Cart";
+// import ShiprocketOrderForm from "./components/ShiprocketOrderForm";  
+import BuyNowComponent from "./components/BuyNowComponent";
 
 function App() {
   return (
@@ -39,12 +41,10 @@ function App() {
               <Route path="/add-product" element={<AddProduct />} />
               <Route path="/wishlist" element={<Wishlist />} />
               <Route path="/cart" element={<Cart />} />
-
+              <Route path="/buy-now/:productId" element={<BuyNowComponent />} />
             </Routes>
-
           </Router>
         </main>
-
         <Footer />
       </CartProvider>
     </>

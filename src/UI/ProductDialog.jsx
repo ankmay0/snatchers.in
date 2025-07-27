@@ -11,7 +11,6 @@ const renderStars = (rating) => {
   const maxStars = 5;
   const filledStars = Math.round(rating);
   const stars = [];
-
   for (let i = 1; i <= maxStars; i++) {
     stars.push(
       <span key={i} className="text-yellow-500 text-xl">
@@ -31,18 +30,20 @@ const ProductDialog = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/products/${productId}`);
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_BASE_URL}/api/products/${productId}`
+        );
         setProduct(res.data);
       } catch (err) {
         console.error("Product not found:", err);
         setProduct(null);
       }
     };
-
     fetchProduct();
   }, [productId]);
 
-  if (!product) return <div className="p-12 text-center text-lg">Product not found</div>;
+  if (!product)
+    return <div className="p-12 text-center text-lg">Product not found</div>;
 
   return (
     <div className="min-h-screen bg-white p-12 max-w-7xl mx-auto">
@@ -121,6 +122,15 @@ const ProductDialog = () => {
               {product.badgeText}
             </span>
           )}
+
+          {/* --- BUY NOW BUTTON --- */}
+          <button
+            className="mt-8 px-8 py-3 rounded-md bg-red-600 hover:bg-red-700 text-white text-lg font-semibold shadow transition disabled:bg-gray-300 disabled:cursor-not-allowed"
+            onClick={() => navigate(`/buy-now/${product._id}`)}
+            type="button"
+          >
+            Buy Now
+          </button>
         </div>
       </div>
     </div>
