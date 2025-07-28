@@ -3,37 +3,11 @@ import { LogOut, Mail, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Avatar from "react-avatar";
 
-const orders = [
-  {
-    id: 101,
-    productTitle: "Rose Gold Watch",
-    productImage: "/product-7.jpg",
-    price: 499.99,
-    status: "Delivered",
-    orderDate: "2025-05-10",
-  },
-  {
-    id: 102,
-    productTitle: "Platinum Band",
-    productImage: "/product-10.jpg",
-    price: 1099.99,
-    status: "Shipped",
-    orderDate: "2025-05-22",
-  },
-  {
-    id: 103,
-    productTitle: "Silver Bracelet",
-    productImage: "/product-3.jpg",
-    price: 149.99,
-    status: "Processing",
-    orderDate: "2025-05-27",
-  },
-];
-
 const ProfilePage = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null); // 🔄 backend user data
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [orders, setOrders] = useState([]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -42,16 +16,12 @@ const ProfilePage = () => {
         navigate("/login");
         return;
       }
-
       try {
-        const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/user/me`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
+        const res = await fetch(
+          `${process.env.REACT_APP_API_BASE_URL}/api/user/me`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
         if (!res.ok) throw new Error("Unauthorized");
-
         const data = await res.json();
         setUser(data);
         setLoading(false);
@@ -60,12 +30,29 @@ const ProfilePage = () => {
         navigate("/login");
       }
     };
-
     fetchUser();
   }, [navigate]);
 
+  useEffect(() => {
+    const fetchOrders = async () => {
+      if (!user || !user.email) return;
+      try {
+        const token = localStorage.getItem("token");
+        const res = await fetch(
+          `${process.env.REACT_APP_API_BASE_URL}/api/orders?email=${encodeURIComponent(user.email)}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        const data = await res.json();
+        setOrders(data.orders || []);
+      } catch (err) {
+        setOrders([]);
+      }
+    };
+    fetchOrders();
+  }, [user]);
+
   const handleSignOut = () => {
-    localStorage.removeItem("token"); // 🔓 remove JWT
+    localStorage.removeItem("token");
     navigate("/login");
   };
 
@@ -136,38 +123,55 @@ const ProfilePage = () => {
             My Orders
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {orders.map((order) => (
-              <div
-                key={order.id}
-                className="border border-black/10 rounded-lg p-4 flex gap-4 items-center bg-[#fafafa] hover:shadow-lg transition"
-              >
-                <img
-                  src={order.productImage}
-                  alt={order.productTitle}
-                  className="w-20 h-20 object-cover rounded border border-black"
-                />
-                <div className="flex-1">
-                  <h4 className="font-medium text-lg">{order.productTitle}</h4>
-                  <p className="text-sm text-gray-600">${order.price.toFixed(2)}</p>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Ordered on {order.orderDate}
-                  </p>
+            {orders.length > 0 ? (
+              orders.map((order) => (
+                <div
+                  key={order.id}
+                  className="border border-black/10 rounded-lg p-4 flex gap-4 items-center bg-[#fafafa] hover:shadow-lg transition cursor-pointer"
+                  onClick={() =>
+                    order.productId ? navigate(`/product/${order.productId}`) : undefined
+                  }
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={e => {
+                    if (e.key === "Enter" && order.productId) {
+                      navigate(`/products/${order.productId}`);
+                    }
+                  }}
+                  aria-label={order.productTitle}
+                >
+                  <img
+                    src={order.productImage || "/product-placeholder.jpg"}
+                    alt={order.productTitle}
+                    className="w-20 h-20 object-cover rounded border border-black"
+                  />
+                  <div className="flex-1">
+                    <h4 className="font-medium text-lg">{order.productTitle}</h4>
+                    <p className="text-sm text-gray-600">₹{order.price}</p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Ordered on {order.orderDate}
+                    </p>
+                  </div>
+                  <div>
+                    <span
+                      className={`text-xs px-3 py-1 rounded-full border ${
+                        order.status === "Delivered"
+                          ? "bg-green-100 border-green-400 text-green-800"
+                          : order.status === "Shipped"
+                          ? "bg-yellow-100 border-yellow-400 text-yellow-800"
+                          : "bg-red-100 border-red-400 text-red-800"
+                      }`}
+                    >
+                      {order.status}
+                    </span>
+                  </div>
                 </div>
-                <div>
-                  <span
-                    className={`text-xs px-3 py-1 rounded-full border ${
-                      order.status === "Delivered"
-                        ? "bg-green-100 border-green-400 text-green-800"
-                        : order.status === "Shipped"
-                        ? "bg-yellow-100 border-yellow-400 text-yellow-800"
-                        : "bg-red-100 border-red-400 text-red-800"
-                    }`}
-                  >
-                    {order.status}
-                  </span>
-                </div>
+              ))
+            ) : (
+              <div className="col-span-2 text-center text-gray-500">
+                No orders found.
               </div>
-            ))}
+            )}
           </div>
         </div>
       </div>

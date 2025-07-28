@@ -15,7 +15,6 @@ import AddProduct from "./Admin/AddProduct";
 import Wishlist from "./Pages/Wishlist";
 import { CartProvider } from './contexts/CartContext';
 import Cart from "./Pages/Cart";
-// import ShiprocketOrderForm from "./components/ShiprocketOrderForm";  
 import BuyNowComponent from "./components/BuyNowComponent";
 
 function App() {

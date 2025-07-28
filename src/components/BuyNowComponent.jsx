@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import OrderPlacedModal from "./OrderPlacedModal"; // <-- ADD THIS IMPORT!
+import OrderPlacedModal from "./OrderPlacedModal";
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 const PICKUP_LOCATION = "warehouse";
@@ -22,6 +22,24 @@ const BuyNowComponent = () => {
   });
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
+
+  // Prefill email from backend
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    axios
+      .get(`${API_BASE_URL}/api/user/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        const user = response.data;
+        setForm((prev) => ({
+          ...prev,
+          email: user.email || "",
+        }));
+      });
+  }, []);
 
   useEffect(() => {
     setLoadingProduct(true);
@@ -45,7 +63,6 @@ const BuyNowComponent = () => {
     setLoading(true);
     setResult(null);
 
-    // Check if Razorpay has loaded
     if (!(window && window.Razorpay)) {
       setResult({
         success: false,
@@ -56,9 +73,8 @@ const BuyNowComponent = () => {
     }
 
     try {
-      // 1. Create Razorpay Order
       const paymentPayload = {
-        amount: product.price, // INR, backend should convert to paise
+        amount: product.price,
         currency: "INR",
         receipt: "rcptid_" + Date.now(),
       };
@@ -68,16 +84,14 @@ const BuyNowComponent = () => {
       );
       const { id: razorpayOrderId, amount, currency } = paymentRes.data.order;
 
-      // 2. Open Razorpay Checkout
       const options = {
-        key: process.env.REACT_APP_RAZORPAY_KEY_ID, // Razorpay public key
-        amount, // paise
+        key: process.env.REACT_APP_RAZORPAY_KEY_ID,
+        amount,
         currency,
         name: "Your Shop Name",
         description: "Product Purchase",
         order_id: razorpayOrderId,
         handler: async function (response) {
-          // 3. Shiprocket order creation – only after successful payment
           const payment_id = response.razorpay_payment_id;
 
           try {
@@ -93,6 +107,7 @@ const BuyNowComponent = () => {
               billing_state: form.state,
               billing_country: form.country,
               billing_email: form.email,
+              shipping_email: form.email, // <--- ADDED THIS LINE
               billing_phone: form.phone,
               shipping_is_billing: true,
               order_items: [
@@ -147,10 +162,8 @@ const BuyNowComponent = () => {
         },
       };
 
-      // Must check if window.Razorpay is available
       const rzp = new window.Razorpay(options);
       rzp.open();
-      // Do not set loading false here, wait until handler or cancel
     } catch (err) {
       setResult({ success: false, error: err.message });
       setLoading(false);
@@ -171,9 +184,7 @@ const BuyNowComponent = () => {
   if (loadingProduct) return <div>Loading product...</div>;
   if (!product) return <div>Product not found</div>;
 
-  // === ORDER PLACED MODAL SHOW ===
   if (result && result.success) {
-    // Try to get order ID from the shiprocket API response
     const orderId =
       result.response?.shiprocket?.order_id ||
       result.response?.order_id ||
@@ -249,7 +260,7 @@ const BuyNowComponent = () => {
           type="email"
           value={form.email}
           required
-          onChange={handleChange}
+          readOnly
         />
         <input
           className="border border-gray-300 rounded px-4 py-2 focus:border-red-500 outline-none"

@@ -8,16 +8,58 @@ import {
   FaTimes,
   FaHeart,
 } from 'react-icons/fa';
-import { useAuth } from '../contexts/AuthContext.jsx'; // 🔹 Firebase Auth context
+import { useAuth } from '../contexts/AuthContext.jsx';
 import axios from 'axios';
 
 const Navbar = () => {
-  const { currentUser } = useAuth(); // 🔹 Firebase user
+  const { currentUser } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showMobileSearch, setShowMobileSearch] = useState(true);
 
   const [wishlistCount, setWishlistCount] = useState(0);
-  const [cartItems, setCartItems] = useState([]); // Assuming cart items from backend
+  const [cartItems, setCartItems] = useState([]);
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
+  const handleSearchChange = async (e) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+
+    if (value.length > 0) {
+      try {
+        const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/search`, {
+          params: { q: value }
+        });
+        setSearchResults(res.data);
+        setShowSuggestions(true);
+      } catch (err) {
+        console.error('Search failed:', err);
+        setSearchResults([]);
+        setShowSuggestions(false);
+      }
+    } else {
+      setSearchResults([]);
+      setShowSuggestions(false);
+    }
+  };
+
+  // Dismiss dropdown on click outside
+  useEffect(() => {
+    const handler = (event) => {
+      if (
+        event.target.closest('.search-suggestions') === null &&
+        event.target.closest('.product-search-input') === null
+      ) {
+        setShowSuggestions(false);
+      }
+    };
+    if (showSuggestions) {
+      document.addEventListener('mousedown', handler);
+    }
+    return () => document.removeEventListener('mousedown', handler);
+  }, [showSuggestions]);
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
@@ -31,7 +73,6 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // 🔄 Fetch data from backend using Firebase token
   useEffect(() => {
     const fetchUserData = async () => {
       if (!currentUser) return;
@@ -49,7 +90,7 @@ const Navbar = () => {
         ]);
 
         setWishlistCount(wishlistRes.data.length);
-        setCartItems(cartRes.data); // Assuming array of items
+        setCartItems(cartRes.data);
       } catch (err) {
         console.error('Error fetching user data:', err);
       }
@@ -64,6 +105,56 @@ const Navbar = () => {
     else window.location.href = '/profile';
   };
 
+  // Search Suggestions Dropdown
+  const renderSearchSuggestions = () =>
+    (searchQuery && showSuggestions) ? (
+      <div className="search-suggestions absolute left-0 right-0 top-full z-50 bg-white border border-gray-200 rounded-b-xl shadow-lg"
+        style={{ minWidth: '100%' }}>
+        {searchResults.length > 0 ? (
+          <ul>
+            {searchResults.map((product) => (
+              <li
+                key={product._id || product.id}
+                className="px-4 py-2 hover:bg-gray-100 flex items-center border-b border-gray-100 last:border-b-0"
+              >
+                <a
+                  href={`/product/${product._id || product.id}`}
+                  className="flex items-center w-full"
+                  onClick={() => setShowSuggestions(false)}
+                  tabIndex={0}
+                >
+                  {product.images && product.images[0] && (
+                    <img
+                      src={product.images[0]}
+                      alt={product.title}
+                      className="w-10 h-10 object-cover rounded mr-3 border"
+                    />
+                  )}
+                  <div className="flex flex-col min-w-0">
+                    <span className="font-medium text-gray-800 truncate">{product.title}</span>
+                    {product.badgeText && (
+                      <span
+                        className={`mt-0.5 text-xs px-2 py-0.5 rounded ${product.badgeClass || 'bg-red-500 text-white'}`}
+                      >
+                        {product.badgeText}
+                      </span>
+                    )}
+                  </div>
+                  <span className="ml-auto text-sm text-gray-600 font-light whitespace-nowrap">
+                    ₹{product.price}
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div className="px-4 py-4 text-center text-gray-600 select-none">
+            No products found
+          </div>
+        )}
+      </div>
+    ) : null;
+
   return (
     <>
       <header className="fixed top-8 left-0 w-full bg-white shadow-md z-40">
@@ -73,14 +164,23 @@ const Navbar = () => {
               <img src="/logo-black.png" alt="Logo" className="h-12 w-auto" />
             </a>
 
+            {/* Desktop Search Bar */}
             <div className="hidden lg:flex flex-grow justify-center px-4">
-              <div className="bg-gray-200 rounded-full flex items-center px-4 py-3 shadow-md w-[800px] max-w-full">
-                <FaSearch className="text-gray-500 mr-2" />
-                <input
-                  type="text"
-                  placeholder="Search for products..."
-                  className="w-full outline-none text-sm bg-transparent placeholder-gray-500"
-                />
+              <div className="relative w-[800px] max-w-full">
+                <div className="bg-gray-200 rounded-full flex items-center px-4 py-3 shadow-md w-full">
+                  <FaSearch className="text-gray-500 mr-2" />
+                  <input
+                    type="text"
+                    placeholder="Search for products..."
+                    className="w-full outline-none text-sm bg-transparent placeholder-gray-500 product-search-input"
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    onFocus={() => {
+                      if (searchResults.length > 0 || searchQuery.length > 0) setShowSuggestions(true);
+                    }}
+                  />
+                </div>
+                {renderSearchSuggestions()}
               </div>
             </div>
 
@@ -101,8 +201,6 @@ const Navbar = () => {
                   </span>
                 )}
               </a>
-
-
               <a
                 href="/profile"
                 onClick={handleUserClick}
@@ -110,7 +208,6 @@ const Navbar = () => {
               >
                 <FaUser />
               </a>
-
               <button
                 className="lg:hidden text-2xl text-gray-700"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -120,15 +217,24 @@ const Navbar = () => {
             </div>
           </div>
 
+          {/* Mobile Search Bar */}
           {showMobileSearch && (
             <div className="block lg:hidden mt-4 w-full px-4">
-              <div className="bg-white border-2 border-black rounded-full flex items-center px-4 py-2 shadow-md mx-auto max-w-md">
-                <FaSearch className="text-gray-500 mr-2" />
-                <input
-                  type="text"
-                  placeholder="Search for products..."
-                  className="w-full outline-none text-sm bg-transparent placeholder-gray-500"
-                />
+              <div className="relative max-w-md mx-auto w-full">
+                <div className="bg-white border-2 border-black rounded-full flex items-center px-4 py-2 shadow-md w-full">
+                  <FaSearch className="text-gray-500 mr-2" />
+                  <input
+                    type="text"
+                    placeholder="Search for products..."
+                    className="w-full outline-none text-sm bg-transparent placeholder-gray-500 product-search-input"
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    onFocus={() => {
+                      if (searchResults.length > 0 || searchQuery.length > 0) setShowSuggestions(true);
+                    }}
+                  />
+                </div>
+                {renderSearchSuggestions()}
               </div>
             </div>
           )}
@@ -152,20 +258,23 @@ const Navbar = () => {
             <a href="/contact" className="hover:text-indigo-600">
               Contact Us
             </a>
-
           </nav>
         </div>
       </header>
 
       <div
-        className={`fixed inset-0 bg-black bg-opacity-50 z-30 transition-opacity duration-300 ${isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-          }`}
+        className={`fixed inset-0 bg-black bg-opacity-50 z-30 transition-opacity duration-300 ${
+          isMobileMenuOpen
+            ? 'opacity-100 pointer-events-auto'
+            : 'opacity-0 pointer-events-none'
+        }`}
         onClick={() => setIsMobileMenuOpen(false)}
       ></div>
 
       <div
-        className={`fixed top-0 right-0 h-full w-64 bg-white shadow-lg z-50 transform transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
-          }`}
+        className={`fixed top-0 right-0 h-full w-64 bg-white shadow-lg z-50 transform transition-transform duration-300 ease-in-out ${
+          isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
       >
         <div className="flex items-center justify-between p-4 border-b">
           <span className="text-lg font-semibold text-gray-800">Menu</span>
@@ -181,7 +290,6 @@ const Navbar = () => {
           <a href="/about" className="hover:text-indigo-600">About Us</a>
           <a href="/contact" className="hover:text-indigo-600">Contact Us</a>
         </nav>
-
       </div>
     </>
   );
