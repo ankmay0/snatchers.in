@@ -1,4 +1,4 @@
-// vercel.json (in your frontend project root)
+
 {
   "rewrites": [
     {
