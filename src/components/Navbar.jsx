@@ -9,12 +9,10 @@ import {
   FaHeart,
 } from 'react-icons/fa';
 import { useAuth } from '../contexts/AuthContext.jsx';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Navbar = () => {
   const { currentUser } = useAuth();
-  const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showMobileSearch, setShowMobileSearch] = useState(true);
 
@@ -107,6 +105,11 @@ const Navbar = () => {
     else window.location.href = '/profile';
   };
 
+  const handleProductClick = (productId) => {
+    setShowSuggestions(false);
+    window.location.assign(`/product/${productId}`);
+  };
+
   // Search Suggestions Dropdown
   const renderSearchSuggestions = () =>
     (searchQuery && showSuggestions) ? (
@@ -121,10 +124,7 @@ const Navbar = () => {
               >
                 <div
                   className="flex items-center w-full cursor-pointer"
-                  onClick={() => {
-                    setShowSuggestions(false);
-                    navigate(`/product/${product._id || product.id}`);
-                  }}
+                  onClick={() => handleProductClick(product._id || product.id)}
                   tabIndex={0}
                 >
                   {product.images && product.images[0] && (
