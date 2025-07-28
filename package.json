@@ -1,5 +1,6 @@
 {
   "name": "snatchers.in",
+  "homepage": "/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -59,6 +60,5 @@
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/ankmay0/snatchers.in/issues"
-  },
-  "homepage": "."
+  }
 }
