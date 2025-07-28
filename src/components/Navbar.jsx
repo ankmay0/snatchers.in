@@ -9,10 +9,12 @@ import {
   FaHeart,
 } from 'react-icons/fa';
 import { useAuth } from '../contexts/AuthContext.jsx';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Navbar = () => {
   const { currentUser } = useAuth();
+  const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showMobileSearch, setShowMobileSearch] = useState(true);
 
@@ -117,10 +119,12 @@ const Navbar = () => {
                 key={product._id || product.id}
                 className="px-4 py-2 hover:bg-gray-100 flex items-center border-b border-gray-100 last:border-b-0"
               >
-                <a
-                  href={`/product/${product._id || product.id}`}
-                  className="flex items-center w-full"
-                  onClick={() => setShowSuggestions(false)}
+                <div
+                  className="flex items-center w-full cursor-pointer"
+                  onClick={() => {
+                    setShowSuggestions(false);
+                    navigate(`/product/${product._id || product.id}`);
+                  }}
                   tabIndex={0}
                 >
                   {product.images && product.images[0] && (
@@ -143,7 +147,7 @@ const Navbar = () => {
                   <span className="ml-auto text-sm text-gray-600 font-light whitespace-nowrap">
                     ₹{product.price}
                   </span>
-                </a>
+                </div>
               </li>
             ))}
           </ul>
