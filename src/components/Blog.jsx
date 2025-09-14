@@ -7,21 +7,21 @@ const blogs = [
     title: 'How to Pick the Perfect Gift for Her',
     date: '20/June/2018',
     description: 'A journey of thoughtfulness, intention, and emotional connection.',
-    image: 'https://i.ibb.co/60xjVq86/Screenshot-2025-09-10-002901.png'
+    image: '/nackless.jpg'
   },
   {
     id: 2,
     title: '5 Affordable Earrings That Look Premium',
     date: '21/June/2018',
     description: 'Because elegance shouldn’t come with an elite price tag.',
-    image: 'https://i.postimg.cc/50CXn7pf/Screenshot-2025-09-10-002928.png'
+    image: '/earing.jpg'
   },
   {
     id: 3,
     title: 'How We Craft Our Handmade Jewellery at Snatchers',
     date: '22/June/2018',
     description: 'Where every piece begins with heart and ends with a story.',
-    image: 'https://i.postimg.cc/m2xYfMFd/Screenshot-2025-09-10-002915.png'
+    image: '/ring.jpg'
   }
 ];
 

@@ -5,7 +5,7 @@ const Blog3 = () => {
   return (
     <article className="max-w-screen-md mx-auto py-10 px-4 sm:px-6 lg:px-8">
       <img
-        src="https://i.postimg.cc/m2xYfMFd/Screenshot-2025-09-10-002915.png" // Replace with a more fitting image if needed
+        src="/ring.jpg" // Replace with a more fitting image if needed
         alt="Handmade Jewellery at Snatchers"
         className="rounded-lg shadow-md mb-6 w-full object-cover max-h-[400px]"
       />

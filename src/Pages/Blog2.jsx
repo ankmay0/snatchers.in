@@ -5,7 +5,7 @@ const Blog2 = () => {
   return (
     <article className="max-w-screen-md mx-auto py-10 px-4 sm:px-6 lg:px-8">
       <img
-        src="https://i.postimg.cc/50CXn7pf/Screenshot-2025-09-10-002928.png"
+        src="/earing.jpg"
         alt="5 Affordable Earrings That Look Premium"
         className="rounded-lg shadow-md mb-6 w-full object-cover max-h-[400px]"
       />

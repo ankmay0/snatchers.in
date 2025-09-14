@@ -1,15 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-// Replace these with <img src={require(...)} /> or direct imports if using local images
-const blogMainImage = "https://i.ibb.co/60xjVq86/Screenshot-2025-09-10-002901.png";
-const pendantImage = "https://i.ibb.co/60xjVq86/Screenshot-2025-09-10-002901.png"; // Placeholder, update with actual image if needed
+
 
 const Blog1 = () => (
   <article className="max-w-screen-md mx-auto py-10 px-4 sm:px-6 lg:px-8 bg-white rounded-xl shadow-lg">
     {/* Main Blog Image */}
     <img
-      src={blogMainImage}
+      src="/nackless.jpg"
       alt="How to Pick the Perfect Gift for Her"
       className="rounded-lg shadow-md mb-6 w-full object-cover max-h-[350px]"
     />
