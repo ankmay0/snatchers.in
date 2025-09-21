@@ -21,7 +21,9 @@ const CategoryShop = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/products`);
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_BASE_URL}/api/products`
+        );
         setProducts(res.data);
       } catch (err) {
         console.error("Error fetching products:", err);
@@ -31,14 +33,34 @@ const CategoryShop = () => {
     fetchProducts();
   }, []);
 
+  // ✅ Fixed filtering logic
   const filteredProducts = products.filter((product) => {
+    let matchesCategory = true;
+    let matchesOccasion = true;
+
     if (category) {
-      return product.category === category;
+      matchesCategory =
+        typeof product.category === "string" &&
+        product.category.toLowerCase() === category.toLowerCase();
     }
+
     if (occasion) {
-      return product.occasion?.includes(occasion);
+      if (Array.isArray(product.occasion)) {
+        matchesOccasion = product.occasion.some(
+          (o) =>
+            typeof o === "string" &&
+            o.toLowerCase().includes(occasion.toLowerCase())
+        );
+      } else if (typeof product.occasion === "string") {
+        matchesOccasion = product.occasion
+          .toLowerCase()
+          .includes(occasion.toLowerCase());
+      } else {
+        matchesOccasion = false;
+      }
     }
-    return true;
+
+    return matchesCategory && matchesOccasion;
   });
 
   let headingText = "Shop";
@@ -50,7 +72,9 @@ const CategoryShop = () => {
         ? "Shop For Women"
         : `Shop For ${category}`;
   } else if (occasion) {
-    headingText = `Shop For ${occasion.charAt(0).toUpperCase() + occasion.slice(1)}`;
+    headingText = `Shop For ${
+      occasion.charAt(0).toUpperCase() + occasion.slice(1)
+    }`;
   }
 
   const handleAddToCart = (product) => {
@@ -91,7 +115,9 @@ const CategoryShop = () => {
               />
             ))
           ) : (
-            <p className="text-center col-span-full text-gray-500">No products found.</p>
+            <p className="text-center col-span-full text-gray-500">
+              No products found.
+            </p>
           )}
         </div>
       </div>
